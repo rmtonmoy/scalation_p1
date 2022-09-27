@@ -1,0 +1,14 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(runMain scalation.modeling.classifying.nullModelTest, Some(ec05b390-ee6c-455f-8a6f-9cff886d0da5), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / runMain[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /Users/nancymiller/jam/software/scalation/scalation_2.0/target/scala-3.1.1/classes ...[0m
+[0m[[0m[31merror[0m] [0m[0m[31m-- [E007] Type Mismatch Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/modeling/classifying/Classifier.scala:202:48 [0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m202 |[0m    fitMap     qof = ${FitM.fitMap (ftVec, QoFC.values)}[0m
+[0m[[0m[31merror[0m] [0m[0m    |                                           [31m^^^^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m    |                  Found:    Array[scalation.modeling.[1m[31mclassifying[0m[1m[31m.[0m[1m[31mQoFC[0m][0m
+[0m[[0m[31merror[0m] [0m[0m    |                  Required: Array[scalation.modeling.[1m[32mQoF[0m][0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0m(Compile / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 0 s, completed Mar 23, 2022, 2:55:57 PM[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m

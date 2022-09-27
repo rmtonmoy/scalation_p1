@@ -1,0 +1,7 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(compile, Some(7596e236-f932-4f27-bf14-4a5a74aee1a5), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / compile[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 321 Scala sources to /Users/nancymiller/jam/software/scalation/scalation_2.0/target/scala-3.1.1/classes ...[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 13 s, completed Mar 29, 2022, 12:32:13 AM[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m
+[0m[[0m[0mdebug[0m] [0m[0mForcing garbage collection...[0m

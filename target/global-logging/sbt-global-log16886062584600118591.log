@@ -1,0 +1,169 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(compile, Some(ea79352d-8a1c-478e-851f-f8a92744331f), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / compile[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 2 Scala sources to /Users/nancymiller/jam/software/scalation/scalation_2.0/target/scala-3.1.3/classes ...[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E040] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:44:20 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m44 |[0m        [33mdef[0m [36mfind[0m ([36mK[0m k): [35mV[0m =[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                    ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m                    ':' expected, but identifier found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E040] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:49:19 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m49 |[0m        [33mdef[0m [36madd[0m ([36mK[0m k, [36mV[0m v): [35mUnit[0m =[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                   ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m                   ':' expected, but identifier found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E040] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:49:24 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m49 |[0m        [33mdef[0m [36madd[0m ([36mK[0m k, [36mV[0m v): [35mUnit[0m =[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                        ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m                        ':' expected, but identifier found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:59:8 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m59 |[0m        end print[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m        ^^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m        misaligned end marker[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E088] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:68:12 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m68 |[0m    [33mprivate[0m int mod1     = [31m4[0m                                [34m// modulus for low resolution hashing[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m            ^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m            Expected start of definition[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m You have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    ----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mYou have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E088] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:69:12 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m69 |[0m    [33mprivate[0m int mod2     = [31m2[0m * mod1                         [34m// modulus for high resolution hashing[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m            ^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m            Expected start of definition[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m You have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    ----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mYou have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E088] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:70:12 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m70 |[0m    [33mprivate[0m int isplit   = [31m0[0m                                [34m// index of the next bucket to split[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m            ^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m            Expected start of definition[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m You have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    ----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mYou have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E088] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:71:12 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m71 |[0m    [33mprivate[0m int count    = [31m0[0m                                [34m// counter for number buckets accessed (performance testing)[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m            ^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m            Expected start of definition[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m You have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    ----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mYou have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E088] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:72:12 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m72 |[0m    [33mprivate[0m int keyCount = [31m0[0m                                [34m// counter for total number of keys in the LinHash Map[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m            ^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m            Expected start of definition[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m You have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    ----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mYou have to provide either [33mclass[0m, [33mtrait[0m, [33mobject[0m, or [33menum[0m definitions after qualifiers[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E018] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:75:74 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m75 |[0m     * Return a set containing all the entries as pairs of keys and values.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                                                                          ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m                                       expression expected but [31m'.'[0m found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m An expression cannot start with [31m'.'[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    ----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mAn expression cannot start with [31m'.'[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E018] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:87:20 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m87 |[0m     * Given the key, look up the value in the hash table.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                    ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m                    expression expected but [31m','[0m found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m An expression cannot start with [31m','[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    ----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mAn expression cannot start with [31m','[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:89:7 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m89 |[0m     * @[33mreturn[0m  the value associated [33mwith[0m the key[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m       ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m       end of statement expected but '@' found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E040] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:92:10 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m92 |[0m    [33mdef[0m [36mV[0m get (Object key): V =[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m          ^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m          '=' expected, but identifier found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:95:4 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m95 |[0m    end get[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m    ^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m    misaligned end marker[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E018] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:98:47 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m98 |[0m     * Put the key-value pair in the hash table.  Split the [31m'isplit[0m' bucket chain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                                               ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m                                       expression expected but [31m'.'[0m found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m An expression cannot start with [31m'.'[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    ----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mAn expression cannot start with [31m'.'[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:101:7 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m101 |[0m     * @param value  the value to insert[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m       ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m       end of statement expected but '@' found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:102:7 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m102 |[0m     * @[33mreturn[0m  the old/previous value, [31mnull[0m [33mif[0m none[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m       ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m       end of statement expected but '@' found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E040] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:104:15 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m104 |[0m    [33mdef[0m [36mput[0m ([36mK[0m key, [36mV[0m value): [35mV[0m =[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m               ^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m               ':' expected, but identifier found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E040] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:104:22 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m104 |[0m    [33mdef[0m [36mput[0m ([36mK[0m key, [36mV[0m value): [35mV[0m =[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m                      ^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m                      ':' expected, but identifier found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E018] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:117:15 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m117 |[0m              b.next != [31mnull[0m [33mdo[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m               ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m               expression expected but [31m'.'[0m found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |---------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m An expression cannot start with [31m'.'[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     ---------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mAn expression cannot start with [31m'.'[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E040] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:130:13 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m130 |[0m    [33mdef[0m [36mvoid[0m show (): Unit =[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m             ^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m             '=' expected, but identifier found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:132:25 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m132 |[0m        println ([31m"-"[0m * [31m60[0m")[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m                         ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m                         unclosed string literal[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/LinHashMap.scala:144:25 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m144 |[0m        println ([31m"-"[0m * [31m60[0m")[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m                         ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m                         unclosed string literal[0m
+[0m[[0m[0minfo[0m] [0m[0mshutting down sbt server[0m

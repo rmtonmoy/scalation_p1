@@ -1,0 +1,14 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(runMain scalation.modeling.classifying.nullModelTest, Some(b21d9ad4-32f7-49f7-91f3-fb58b5fe9e6f), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / runMain[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /Users/nancymiller/jam/software/scalation/scalation_2.0/target/scala-3.1.1/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 38 Scala sources to /Users/nancymiller/jam/software/scalation/scalation_2.0/target/scala-3.1.1/classes ...[0m
+[0m[[0m[31merror[0m] [0m[0m[31m-- [E038] Declaration Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/modeling/classifying/Classifier.scala:190:17 [0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m190 |[0m    [33moverride[0m [33mdef[0m report (ftVec: VectorD): String =[0m
+[0m[[0m[31merror[0m] [0m[0m    |                 [31m^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m    |[33mmethod[0m [35mreport[0m has a different signature than the overridden declaration[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0m(Compile / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 2 s, completed Mar 23, 2022, 2:53:34 PM[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m

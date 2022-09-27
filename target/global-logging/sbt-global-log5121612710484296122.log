@@ -1,0 +1,44 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(compile, Some(78a169ca-0f32-492a-beb3-528343a8a62d), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / compile[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /Users/nancymiller/jam/software/scalation/scalation_2.0/target/scala-3.1.3/classes ...[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E018] Syntax Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/Table.scala:785:12 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m785 |[0m    customer.show ()[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m            ^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m            expression expected but [31m'.'[0m found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |---------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m An expression cannot start with [31m'.'[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     ---------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0mAn expression cannot start with [31m'.'[0m.[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/Table.scala:776:25 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m776 |[0m    [33mval[0m [36mcustomer[0m = Table ([31m"cname, street, ccity"[0m, [31m"S, S, S"[0m, [31m"cname"[0m)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0mmissing argument for parameter key of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mTable[0m: (fileName: String, name: String, domain_: String, key: String, pos_: Array[Int][0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m  , [0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0msep: String): scalation.database.table.Table[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/Table.scala:777:25 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m777 |[0m    [33mval[0m [36mdeposit[0m  = Table ([31m"bname, accno, cname, balance"[0m, [31m"S, I, S, D"[0m, [31m"accno"[0m)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0mmissing argument for parameter key of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mTable[0m: (fileName: String, name: String, domain_: String, key: String, pos_: Array[Int][0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m  , [0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0msep: String): scalation.database.table.Table[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/Table.scala:778:25 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m778 |[0m    [33mval[0m [36mbranch[0m   = Table ([31m"bname, assets, bcity"[0m, [31m"S, D, S"[0m, [31m"bname"[0m)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0mmissing argument for parameter key of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mTable[0m: (fileName: String, name: String, domain_: String, key: String, pos_: Array[Int][0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m  , [0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0msep: String): scalation.database.table.Table[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/table/Table.scala:779:25 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m779 |[0m    [33mval[0m [36mloan[0m     = Table ([31m"bname, loanno, cname, amount"[0m, [31m"S, I, S, D"[0m, [31m"loanno"[0m)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m    |[0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0mmissing argument for parameter key of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mTable[0m: (fileName: String, name: String, domain_: String, key: String, pos_: Array[Int][0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0m  , [0m
+[0m[[0m[31merror[0m] [0m[0m[31m    |[0msep: String): scalation.database.table.Table[0m
+[0m[[0m[31merror[0m] [0m[0m5 errors found[0m
+[0m[[0m[31merror[0m] [0m[0m(Compile / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 1 s, completed Jun 22, 2022, 10:42:55 PM[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m

@@ -1,0 +1,528 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(compile, Some(1b7d2a8c-5293-4dd3-8066-ccd9281e86a6), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / compile[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 3 Scala sources to /Users/nancymiller/jam/software/scalation/scalation_2.0/target/scala-3.1.3/classes ...[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2117:19 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2117 |[0m    [33mval[0m [36mweekdays[0m = Relation ([31m"weekdays"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                   ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"weekdays"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"SD"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2126:19 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2126 |[0m    [33mval[0m [36mweekend[0m  = Relation ([31m"weekend"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                   ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"weekend"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"SD"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2329:22 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2329 |[0m    [33mval[0m [36msales_item1[0m = Relation ([31m"Sales_Item1"[0m, Array ([31m"Date"[0m, [31m"FL"[0m, [31m"GA"[0m, [31m"NC"[0m, [31m"SC"[0m),[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                      ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"Sales_Item1"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"SIIII"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2337:22 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2337 |[0m    [33mval[0m [36mprice_item1[0m = Relation ([31m"Price_Item1"[0m, Array ([31m"Date"[0m, [31m"FL"[0m, [31m"GA"[0m, [31m"NC"[0m, [31m"SC"[0m),[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                      ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"Price_Item1"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"SDDDD"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2417:20 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2417 |[0m    [33mval[0m [36mprofessor[0m = Relation ([31m"professor"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                    ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"professor"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m-1[0m : Int), ([32m"ISSI"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2427:21 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2427 |[0m    [33mval[0m [36mprofessor2[0m = Relation ([31m"professor"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                     ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"professor"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"ISSI"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2455:20 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2455 |[0m    [33mval[0m [36mprofessor[0m = Relation ([31m"professor"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                    ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"professor"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m-1[0m : Int), ([32m"ISSI"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2465:21 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2465 |[0m    [33mval[0m [36mprofessor2[0m = Relation ([31m"professor2"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                     ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"professor2"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m-1[0m : Int), ([32m"ISSI"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2510:18 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2510 |[0m    [33mval[0m [36msensor[0m  = Relation ([31m"sensor"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                  ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"sensor"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"ISDDI"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2514:18 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2514 |[0m    [33mval[0m [36mroad[0m    = Relation ([31m"road"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                  ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"road"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"ISDDDD"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2518:18 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2518 |[0m    [33mval[0m [36mmroad[0m   = Relation ([31m"road"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                  ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"road"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"ISIDDDD"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2522:18 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2522 |[0m    [33mval[0m [36mtraffic[0m = Relation ([31m"traffic"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                  ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"traffic"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"LIID"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2526:18 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2526 |[0m    [33mval[0m [36mwsensor[0m = Relation ([31m"sensor"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                  ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"sensor"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"ISDD"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E134] Type Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Relation.scala:2530:18 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m2530 |[0m    [33mval[0m [36mweather[0m = Relation ([31m"weather"[0m,[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m     |[0m                  ^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mNone of the overloaded alternatives of [33mmethod[0m [35mapply[0m in [33mobject[0m [35mRelation[0m with types[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, domain: scalation.database.Domain, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, key: Int, domain: scalation.database.Domain, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  eSep[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: String, cPos: collection.mutable.ArrayBuffer[Int]): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (fileName: String, name: String, colName: scalation.database.Schema, key: Int, [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m: scalation.database.Domain, skip: Int, eSep: String): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, colName: scalation.database.Schema, row: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  collection.mutable.ArrayBuffer[scalation.database.relation.Row][0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m, key: Int, domain: scalation.database.Domain): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.Schema[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m): scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m (name: String, key: Int, domain: scalation.database.Domain, colName: String*): [0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0m  scalation.database.relation.Relation[0m
+[0m[[0m[31merror[0m] [0m[0m[31m     |[0mmatch arguments (([32m"weather"[0m : String), Array[String], scala.collection.mutable.ArrayBuffer[scalation.database.relation.Row], ([31m0[0m : Int), ([32m"LIID"[0m : String))[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E007] Type Mismatch Error: /Users/nancymiller/jam/software/scalation/scalation_2.0/src/main/scala/scalation/database/relation/Table.scala:90:12 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m90 |[0m            sb.toString[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m            ^^^^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m            Found:    String[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m            Required: scalation.database.Domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Explanation (enabled by `-explain`)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m Tree: sb.toString()[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m I tried to show that[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m   String[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m conforms to[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m   scalation.database.Domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m but the comparison trace ended with `false`:[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m   ==> String  <:  scalation.database.Domain[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m     ==> String  <:  Array[Char][0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m       ==> String  <:  Array[Char][0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m       <== String  <:  Array[Char] = false[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m     <== String  <:  Array[Char] = false[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m   <== String  <:  scalation.database.Domain = false[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m The tests were made under the empty constraint[0m
+[0m[[0m[31merror[0m] [0m[0m[31m    ----------------------------------------------------------------------------[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34mExplanation[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[34m===========[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0mTree: sb.toString()[0m
+[0m[[0m[31merror[0m] [0m[0mI tried to show that[0m
+[0m[[0m[31merror[0m] [0m[0m  String[0m
+[0m[[0m[31merror[0m] [0m[0mconforms to[0m
+[0m[[0m[31merror[0m] [0m[0m  scalation.database.Domain[0m
+[0m[[0m[31merror[0m] [0m[0mbut the comparison trace ended with `false`:[0m
+[0m[[0m[31merror[0m] [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m  ==> String  <:  scalation.database.Domain[0m
+[0m[[0m[31merror[0m] [0m[0m    ==> String  <:  Array[Char][0m
+[0m[[0m[31merror[0m] [0m[0m      ==> String  <:  Array[Char][0m
+[0m[[0m[31merror[0m] [0m[0m      <== String  <:  Array[Char] = false[0m
+[0m[[0m[31merror[0m] [0m[0m    <== String  <:  Array[Char] = false[0m
+[0m[[0m[31merror[0m] [0m[0m  <== String  <:  scalation.database.Domain = false[0m
+[0m[[0m[31merror[0m] [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0mThe tests were made under the empty constraint[0m
+[0m[[0m[31merror[0m] [0m[0m15 errors found[0m
+[0m[[0m[0mdebug[0m] [0m[0mForcing garbage collection...[0m
+[0m[[0m[31merror[0m] [0m[0m(Compile / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 1 s, completed Jul 24, 2022, 3:40:38 PM[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m
