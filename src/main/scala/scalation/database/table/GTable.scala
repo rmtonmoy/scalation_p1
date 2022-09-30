@@ -264,7 +264,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      *  @param elab  the edge-label, e.g., taughtBy
      *  @param e     the edge (from (u), to(v), tuple)
      */
-    def addE (elab: String, e: Edge): GTable = addE (e.to, elab: String, e)
+    def addE (elab: String, e: Edge): GTable = addE (e.from, elab: String, e)
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Add two edges from vertex u to vertex v and from v to u both with edge-label elab.
@@ -783,7 +783,7 @@ end gTableTest
 
 //  student.edgeTable (("*", course)).show ()
     student.edgeTable (("cid", course)).show ()
-//  course.edgeTable (("pid", professor)).show ()      // FIX - crashes
+    course.edgeTable (("pid", professor)).show ()      // FIX - crashes
 
     //--------------------------------------------------------------------------
     banner ("Example Queries")
