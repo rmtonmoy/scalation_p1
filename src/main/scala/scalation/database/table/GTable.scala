@@ -479,13 +479,21 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      */
     def ejoin (ref: (String, GTable, String)): GTable =
         val (elab, refTab, elab2) = ref                                     // edge-label, referenced table, back edge-label
-        val newKey = key ++ refTab.key                                      // FIX - many-to-?
+        var newKey = key                                                    // FIX - many-to-?
+        val isNotUnique = this.edgeType.get(elab).toString() contains "false"
+        if isNotUnique == true then
+            newKey = key ++ refTab.key
+        end if
 
         val s = new GTable (s"${name}_j_${cntr.inc ()}", schema ++ refTab.schema,
                             domain ++ refTab.domain, newKey)
+                                                                            // need to know if it is m-m or m-1
+        if isNotUnique == true then
+            s.addEdgeType (elab, refTab, false)
+        else
+            s.addEdgeType (elab, refTab)
+        end if
 
-        s.addEdgeType (elab, refTab)                                        // need to know if it is m-m or m-1
-        s.addEdgeType (elab, refTab, false)
 
         for u <- vertices do                                                // iterate over first table vertices
             for v <- u.neighbors ((elab, refTab)) do                        // iterate over second table vertices
@@ -820,13 +828,17 @@ end gTableTest
     val taken_ej = student ejoin ("cid", course, "sid") project ("sname, cname")
     taken_ej.show ()
 
+    banner("courses taught by: Prof name via ejoin")
+    val taken_by = course ejoin("pid", professor, "cid") project ("cname, pname")
+    taken_by.show()
+
 /*
     compare to equivalent for `Table` and `LTable`
     takes.join (("sid", student))
          .join (("cid", course))
          .project ("sname, cname")
 */
-
+/*
     banner ("student taught by")
     val taught_by = student.expand ("sname, cid", ("cid", course))
                            .expand ("sname, pname", ("pid", professor))
@@ -837,7 +849,7 @@ end gTableTest
                             .ejoin ("pid", professor, "cid")
                             .project ("sname, pname")
     taught_by2.show ()
-
+*/
 /*
     compare to equivalent for `Table` and `LTable`
     takes.join (("sid", student))
