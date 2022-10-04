@@ -439,11 +439,21 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         s
     end intersect
 
+    // //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // /** Expand and extract schema x from this graph-table and the referenced table.
+    //  *  Acts as a lightweight join-project operator that only extracts attributes
+    //  *  in schema x and does not create new edges.
+    //  *  FIX:  for wild-card "*" extract all attributes
+    //  */ 
+    // def expand (x: Schema): GTable =
+    //     if x == "*" then expand else edge (elab).map (_.to)
+    // end expand
+
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Expand and extract schema x from this graph-table and the referenced table.
      *  Acts as a lightweight join-project operator that only extracts attributes
      *  in schema x and does not create new edges.
-     *  FIX:  for wildcard "*" extract all attributes
+     *  FIX:  for wild-card "*" extract all attributes
      *  @see https://arxiv.org/pdf/1806.07344.pdf
      *  @param x    the attributes to extract/collect from this and the referenced table.
      *  @param ref  the foreign key reference (edge-label, referenced table)
@@ -849,16 +859,18 @@ end gTableTest
          .project ("sname, cname")
 */
 
-    banner ("student taught by")
-    val taught_by = student.expand ("sname, cid", ("cid", course))
-                           .expand ("sname, pname", ("pid", professor))
-    taught_by.show ()
+    // BROKEN - FIX Double Expand and Double Ejoin
 
-    banner ("student taught by via ejoin")
-    val taught_by2 = student.ejoin ("cid", course, "sid")
-                            .ejoin ("pid", professor, "cid")
-                            .project ("sname, pname")
-    taught_by2.show ()
+    // banner ("student taught by")
+    // val taught_by = student.expand ("sname, cid", ("cid", course))
+    //                        .expand ("sname, pname", ("pid", professor))
+    // taught_by.show ()
+
+    // banner ("student taught by via ejoin")
+    // val taught_by2 = student.ejoin ("cid", course, "sid")
+    //                         .ejoin ("pid", professor, "cid")
+    //                         .project ("sname, pname")
+    // taught_by2.show ()
 
 /*
     compare to equivalent for `Table` and `LTable`
