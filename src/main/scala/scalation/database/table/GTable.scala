@@ -662,6 +662,9 @@ end GTable
     val branch   = GTable ("branch", "bname, assets, bcity", "S, D, S", "bname")
     val loan     = GTable ("loan", "loanno, amount", "I, D", "loanno")
 
+    customer.create_index()
+    branch.create_index()
+
     deposit.addEdgeType ("cname", customer)
     deposit.addEdgeType ("bname", branch)
     loan.addEdgeType ("cname", customer)
@@ -727,12 +730,12 @@ end GTable
     //--------------------------------------------------------------------------
     banner ("Show Table Statistics")
 
-/*
-    customer.stats.show ()         // FIX - add support
+
+    customer.stats.show ()         // FIXED
     branch.stats.show ()
     deposit.stats.show ()
     loan.stats.show ()
-*/
+
 
     //--------------------------------------------------------------------------
     banner ("Example Queries")
@@ -931,102 +934,3 @@ end gTableTest2
 
 end gTableTest3
 
-
-
-
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-/** The `gTableTest` main function tests the `GTable` class with queries on the
- *  Bank database.
- *  > runMain scalation.database.table.gTableStatTest
- */
-@main def gTableStatTest (): Unit =
-
-    // Data Definition Language
-
-    val customer = GTable ("customer", "cname, street, ccity", "S, S, S", "cname")
-    val deposit  = GTable ("deposit", "accno, balance", "I, D", "accno")
-    val branch   = GTable ("branch", "bname, assets, bcity", "S, D, S", "bname")
-    val loan     = GTable ("loan", "loanno, amount", "I, D", "loanno")
-
-    deposit.addEdgeType ("cname", customer)
-    deposit.addEdgeType ("bname", branch)
-    loan.addEdgeType ("cname", customer)
-    loan.addEdgeType ("bname", branch)
-
-    //--------------------------------------------------------------------------
-    banner ("Populate Database")
-
-    val v_Peter = customer.addV ("Peter", "Oak St",   "Bogart")
-    val v_Paul  = customer.addV ("Paul",  "Elm St",   "Watkinsville")
-    val v_Mary  = customer.addV ("Mary",  "Maple St", "Athens")
-    customer.show ()
-
-    val v_Alps     = branch.addV ("Alps",     20000000.0, "Athens")
-    val v_Downtown = branch.addV ("Downtown", 30000000.0, "Athens")
-    val v_Lake     = branch.addV ("Lake",     10000000.0, "Bogart")
-    branch.show ()
-
-    val v_11 = deposit.addV (11, 2000.0)
-    val v_12 = deposit.addV (12, 1500.0)
-    val v_13 = deposit.addV (13, 2500.0)
-    val v_14 = deposit.addV (14, 2500.0)
-    val v_15 = deposit.addV (15, 3000.0)
-    val v_16 = deposit.addV (16, 1000.0)
-
-    deposit.addE ("bname", Edge (v_11, v_Lake))
-           .addE ("bname", Edge (v_12, v_Alps))
-           .addE ("bname", Edge (v_13, v_Downtown))
-           .addE ("bname", Edge (v_14, v_Lake))
-           .addE ("bname", Edge (v_15, v_Alps))
-           .addE ("bname", Edge (v_16, v_Downtown))
-
-    deposit.addE ("cname", Edge (v_11, v_Peter))
-           .addE ("cname", Edge (v_12, v_Paul))
-           .addE ("cname", Edge (v_13, v_Paul))
-           .addE ("cname", Edge (v_14, v_Paul))
-           .addE ("cname", Edge (v_15, v_Mary))
-           .addE ("cname", Edge (v_16, v_Mary))
-    deposit.show ()
-
-    val v_21 = loan.addV (21, 2200.0)
-    val v_22 = loan.addV (22, 2100.0)
-    val v_23 = loan.addV (23, 1500.0)
-    val v_24 = loan.addV (24, 2500.0)
-    val v_25 = loan.addV (25, 3000.0)
-    val v_26 = loan.addV (26, 1000.0)
-
-    loan.addE ("bname", Edge (v_21, v_Alps))
-        .addE ("bname", Edge (v_22, v_Downtown))
-        .addE ("bname", Edge (v_23, v_Alps))
-        .addE ("bname", Edge (v_24, v_Downtown))
-        .addE ("bname", Edge (v_25, v_Alps))
-        .addE ("bname", Edge (v_26, v_Lake))
-
-    loan.addE ("cname", Edge (v_21, v_Peter))
-        .addE ("cname", Edge (v_22, v_Peter))
-        .addE ("cname", Edge (v_23, v_Paul))
-        .addE ("cname", Edge (v_24, v_Paul))
-        .addE ("cname", Edge (v_25, v_Mary))
-        .addE ("cname", Edge (v_26, v_Mary))
-    loan.show ()
-
-    //--------------------------------------------------------------------------
-    banner ("Show Table Statistics")
-
-    customer.stats.show ()         // FIX - add support
-    branch.stats.show ()
-    deposit.stats.show ()
-    loan.stats.show ()
-    //--------------------------------------------------------------------------
-    
-    banner ("Example Queries")
-
-    banner ("live in Athens")
-    val liveAthens = customer.σ ("ccity == 'Athens'").π ("cname") 
-    liveAthens.show ()
-
-    banner ("bank in Athens")
-    val bankAthens = (deposit ⋈ (("bname", branch.σ ("bcity == 'Athens'")))) //.π ("cname")
-    bankAthens.show ()
-
-end gTableStatTest
