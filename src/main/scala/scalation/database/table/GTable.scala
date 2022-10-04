@@ -629,6 +629,12 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Return the basic statistics for each column of this table.
      */
+
+    // #################################################################################################
+    // Fixed stats function for GTable by accounting for the fact that now we are dealing with verticies
+    // rather than tuples. To make stats show function work, had to extract tuples from verticies class
+    // then pass them into an overriden version of the stats function.
+    // #################################################################################################
     override def stats: Table =
         val s = new Table (s"${name}_stats",
                            Array ("column", "count", "countd", "min", "max", "sum", "avg"),
