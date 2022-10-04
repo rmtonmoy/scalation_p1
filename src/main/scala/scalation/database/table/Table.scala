@@ -729,33 +729,10 @@ class Table (override val name: String, override val schema: Schema,
     def minus (r2: Table): Table =
         if incompatible (r2) then return this
         val s = new Table (s"${name}_m_${cntr.inc ()}", schema, domain, key)
-
-                if subset (key, schema) then
-        
-            if r2.hasIndex then 
-                
-                for t <- tuples do
-                    
-                    val t_fkey = new KeyType (pull (t, key))
-                    val u = r2.index.getOrElse (t_fkey, null)
-                    if u == null then s.tuples += t
-
-                end for 
-                
-            else
-
-                for t <- tuples do if ! (r2 contains t) then s.tuples += t
-
-            end if
-
-        else 
-        
-            for t <- tuples do if ! (r2 contains t) then s.tuples += t
-
-        end if 
+     
+        for t <- tuples do if ! (r2 contains t) then s.tuples += t
         s
     end minus
-
 
     // =============================================================== INTERSECT
 
@@ -766,30 +743,11 @@ class Table (override val name: String, override val schema: Schema,
      *--------------------------------------------------------------------------
      *  @param r2  the second table
      */
-
     def intersect (r2: Table): Table =
         if incompatible (r2) then return this
         val s = new Table (s"${name}_i_${cntr.inc ()}", schema, domain, key)
 
-        if subset (key, schema) then
-            if r2.hasIndex then
-                for t <- tuples do
-                    
-                    val t_fkey = new KeyType (pull (t, key))
-                    val u = r2.index.getOrElse (t_fkey, null)
-                    if u != null then s.tuples += t
-
-                end for 
-                
-            else 
-                for t <- tuples do if r2 contains t then s.tuples += t
-        
-            end if 
-
-        else            
-            for t <- tuples do if r2 contains t then s.tuples += t
-        
-        end if
+        for t <- tuples do if r2 contains t then s.tuples += t
         s
     end intersect
 
@@ -964,25 +922,6 @@ class Table (override val name: String, override val schema: Schema,
         end for
         s
     end leftJoin
-
-    
-    //usage deposit leftjoin (("cname", customer))
-
-    def leftJoin (ref: (String, Table)): Table =
-
-             val (fkey, refTab) = ref
-             val s = join(ref)
-
-             val absentTuple = nullTuple (refTab.domain)
-             val ss = s.project (schema)                        // join projected onto original schema
-             for t <- tuples if ! (ss contains t) do
-                 s.tuples += t ++ absentTuple
-             end for
-
-
-             s
-    end leftJoin
-
 
     // ================================================================== DIVIDE
 
@@ -1339,43 +1278,13 @@ class Table (override val name: String, override val schema: Schema,
      *  @param w  the width (# chars) for the column
      */
     def prt (v: ValueType, w: Int): Unit =
-
-        //here for some valu it is giving negative number instead of null
-        if v == null then // add concatenated tuples
-            val str="Null"
-            val w0 = str.size
-            val rem = w - w0
-            val lft = max (rem / 2, 0)
-            val rht = max (rem - lft, 0)
-            print (" " * lft + str +" " * rht)
-
-        else if  v==NO_DOUBLE then
-
-            val str = "Null"
-            val w0 = str.size
-            val rem = w - w0
-            val lft = max (rem / 2, 0)
-            val rht = max (rem - lft, 0)
-            print (" " * lft + str + " " * rht)
-        else if v == NO_INT then
-
-            val str = "Null"
-            val w0 = str.size
-            val rem = w - w0
-            val lft = max (rem / 2, 0)
-            val rht = max (rem - lft, 0)
-            print (" " * lft + str + " " * rht)
-        else
-            val str = v.toString
-            val w0 = str.size
-            val rem = w - w0
-            val lft = max (rem / 2, 0)
-            val rht = max (rem - lft, 0)
-
-            print (" " * lft + str +" " * rht)
-        end if
+        val str = v.toString
+        val w0  = str.size
+        val rem = w - w0
+        val lft = max (rem / 2, 0)
+        val rht = max (rem - lft, 0)
+        print (" " * lft + str + " " * rht)
     end prt
-
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** SHOW/print this table's primary index.
@@ -1612,12 +1521,10 @@ end Table
     a.show ()
 
     banner (""" a minus loan """)
-    loan.create_index()
     q = a minus loan
     q.show ()
 
     banner (""" a intersect loan """)
-    loan.create_index()
     q = a intersect loan
     q.show ()
 
@@ -1875,4 +1782,3 @@ end tableTest2
     covid.writeJSON ()
 
 end tableTest3
-
