@@ -12,6 +12,8 @@ package scalation
 package database
 package table 
 
+import scalation.database.table.Table.{cntr, debug}
+
 import scala.collection.mutable.Map
 import scala.runtime.ScalaRunTime.stringOf
 
@@ -53,7 +55,9 @@ case class LTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
      extends Table (name_, schema_, domain_, key_)
         with Serializable:
 
-    private val links = Map [String, Map [ValueType, Tuple]] ()             // fkey -> pkey links
+    private val links = Map [String, Map [ValueType, Tuple]] () // fkey -> pkey links
+    private val plinks = Map [String, Map [ValueType, Tuple]] ()
+    private [table] val llinkTypes = Map [String, Table] ()                         // link types for foreign keys
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Add LINKAGE (foreign key reference) from this table to refTab and for each
@@ -64,8 +68,14 @@ case class LTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
      *  @param refTab  the referenced table being linked to
      */
     override def addLinkage (fkey: String, refTab: Table): Unit =
-        if ! refTab.hasIndex then refTab.create_index ()                    // make sure refTab has a primary index
-        links += fkey -> Map [ValueType, Tuple] ()                          // establish links map for fkey
+
+        if ! refTab.hasIndex then refTab.create_index () // make sure refTab has a primary index
+        llinkTypes += fkey -> refTab
+        println(s"linktypes: $llinkTypes")
+        links += fkey -> Map [ValueType, Tuple] () // establish links map for fkey
+//        println(s"links: $links")
+        plinks += fkey -> Map [ValueType, Tuple] ()
+//        println(s"plinks: $plinks")
         for t <- tuples do addLink (fkey, t, refTab)                        // add link for each tuple
     end addLinkage
 
@@ -78,14 +88,17 @@ case class LTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
      *  @param refTab  the referenced table being linked to
      */
     def addLink (fkey: String, t: Tuple, refTab: Table): Unit =
-        val t_fkey = pull (t, fkey)
-        val refTup = refTab.index.getOrElse (new KeyType (t_fkey), null)
+        val t_fkey = pull (t, fkey) //pull key from the tuple
+        val refTup = refTab.index.getOrElse (new KeyType (t_fkey), null) //reference tuple of matched foreign key
         if refTup == null then
             flaw ("addLink", s"$name: referential integrity violation for fkey = $fkey, value = $t_fkey")
         else
             val rTup = refTup.asInstanceOf [Tuple]
             debug ("addLink", s"$name: foreign key = $fkey add $t_fkey -> ${stringOf (rTup)}")
             links(fkey) += t_fkey -> rTup
+//            println(s"linksssssss: $links")
+//            plinks(fkey) += t_fkey -> rTup
+//            println(s"plinksssssss: $plinks")
         end if
     end addLink
 
@@ -99,6 +112,48 @@ case class LTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
         val t_fkey = pull (t, fkey)
         links(fkey).remove (t_fkey).isDefined
     end removeLink
+
+    def joinproject (x: Schema): LTable =
+        val newKey = if subset (key, x) then key else x
+        debug ("newKey", s"$newKey")
+        val s = new LTable (s"${name}_p_${cntr.inc ()}", x, pull (x), newKey)
+
+        s.tuples ++= (for t <- tuples yield pull (t, x))
+        s
+    end joinproject
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** PROJECT the tuples in this table onto the given attribute names
+     *  via direct LINKS from this linkable-table to the referenced table
+     *  keeping the tuples as well as the tuples, the foreign key is linked to
+     *  Usage:   course project ("cname, pid")
+     *   @param x  the schema/attribute names to project onto
+     */
+    override def project (x: Schema): LTable =
+
+//        for (keys,values) <- llinkTypes do
+//            print(keys,values)
+        val fkey_link = llinkTypes.keys
+        print(fkey_link)
+        val fkey = fkey_link.mkString
+        val tablevalue = llinkTypes(fkey)
+        val link = links.getOrElse (fkey, null)
+        val newKey = if subset (key, x) then key else x
+        val s = new LTable (s"${name}_j_${cntr.inc ()}", disambiguate (x, tablevalue.schema),
+            pull(x) ++ tablevalue.domain, newKey)
+        if  x contains fkey then
+            for t <- tuples do
+                val tup = pull(t,x)
+                val t_fkey = pull (t, fkey)                                 // pull out foreign key value eg 104
+                val u = link.getOrElse (t_fkey, null)                       // get link for that 104 from links map
+                if u != null then s.tuples += tup ++ u
+            end for
+
+        else
+            flaw ("project", s"$name: foreign key $fkey not established as a link")
+        end if
+        s
+    end project
+
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Compute the EQUI-JOIN via direct LINKS from this linkable-table to the referenced table
@@ -117,10 +172,11 @@ case class LTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
         if link == null then
             flaw ("join", s"$name: foreign key $fkey not established as a link")
         else
-            for t <- tuples do                                              // iterate over fkey table
+            for t <- tuples do // iterate over fkey table
                 val t_fkey = pull (t, fkey)                                 // pull out foreign key value
                 val u = link.getOrElse (t_fkey, null)                       // get tuple from pkey table
                 if u != null then s.tuples += t ++ u                        // add concatenated tuples
+
             end for
         end if
         s
@@ -134,113 +190,113 @@ end LTable
  *  Bank database.
  *  > runMain scalation.database.table.lTableTest
  */
-@main def lTableTest (): Unit =
-
-    // Data Definition Language
-
-    val customer = LTable ("customer", "cname, street, ccity", "S, S, S", "cname")
-    val branch   = LTable ("branch", "bname, assets, bcity", "S, D, S", "bname")
-    val deposit  = LTable ("deposit", "accno, balance, cname, bname", "I, D, S, S", "accno")
-    val loan     = LTable ("loan", "loanno, amount, cname, bname", "I, D, S, S", "loanno")
-
-    customer.create_index ()
-    branch.create_index ()
-
-    //--------------------------------------------------------------------------
-    banner ("Populate Database")
-
-    customer += ("Peter", "Oak St",   "Bogart")
-             += ("Paul",  "Elm St",   "Watkinsville")
-             += ("Mary",  "Maple St", "Athens")
-    customer.show ()
-
-    branch += ("Alps",     20000000.0, "Athens")
-           += ("Downtown", 30000000.0, "Athens")
-           += ("Lake",     10000000.0, "Bogart")
-    branch.show ()
-
-    deposit += (11, 2000.0, "Peter", "Lake")
-            += (12, 1500.0, "Paul",  "Alps")
-            += (13, 2500.0, "Paul",  "Downtown")
-            += (14, 2500.0, "Paul",  "Lake")
-            += (15, 3000.0, "Mary",  "Alps")
-            += (16, 1000.0, "Mary",  "Downtown")
-    deposit.show ()
-
-    loan += (21, 2200.0, "Peter", "Alps")
-         += (22, 2100.0, "Peter", "Downtown")
-         += (23, 1500.0, "Paul",  "Alps")
-         += (24, 2500.0, "Paul",  "Downtown")
-         += (25, 3000.0, "Mary",  "Alps")
-         += (26, 1000.0, "Mary",  "Lake")
-    loan.show ()
-
-    deposit.addLinkage ("cname", customer)
-    deposit.addLinkage ("bname", branch)
-    loan.addLinkage ("cname", customer)
-    loan.addLinkage ("bname", branch)
- 
-    //--------------------------------------------------------------------------
-    banner ("Show Table Statistics")
-
-    customer.stats.show ()
-    branch.stats.show ()
-    deposit.stats.show ()
-    loan.stats.show ()
-
-    //--------------------------------------------------------------------------
-    banner ("Example Queries")
-
-    banner ("Names of customers who live in Athens")
-    val liveAthens = customer.σ ("ccity == 'Athens'").π ("cname")
-    liveAthens.show ()
-
-    banner ("Names of customers who bank (deposits) in Athens")
-//  val bankAthens = (deposit ⋈ branch).σ ("bcity == 'Athens'").π ("cname")
-    val bankAthens = (deposit ⋈ (("bname", branch.σ ("bcity == 'Athens'")))).π ("cname")
-    bankAthens.show ()
-
-    banner ("Names of customers who live or bank in Athens")
-    val liveBank = customer.σ ("ccity == 'Athens'").π ("cname") ⋃
-                   (deposit ⋈ branch).σ ("bcity == 'Athens'").π ("cname")
-    liveBank.create_index ()
-    liveBank.show ()
-
-    banner ("Names of customers who live and bank in the same city")
-    val sameCity = (customer ⋈ deposit ⋈ branch).σ ("ccity == bcity").π ("cname")
-    sameCity.create_index ()
-    sameCity.show ()
-
-    banner ("Names and account numbers of customers with the largest balance")
-    val largest = deposit.π ("cname, accno") - (deposit ⋈ ("balance < balance", deposit)).π ("cname, accno")
-    largest.show ()
-
-    banner ("Names of customers who are silver club members")
-    val silver = (loan.π ("cname, bname") ⋂ deposit.π ("cname, bname")).π ("cname")
-    silver.create_index ()
-    silver.show ()
-
-    banner ("Names of customers who are gold club members")
-    val gold = loan.π ("cname") - (loan.π ("cname, bname") - deposit.π ("cname, bname")).π ("cname")
-    gold.create_index ()
-    gold.show ()
-
-    banner ("Names of branches located in Athens")
-    val inAthens = branch.σ ("bcity == 'Athens'").π ("bname")
-    inAthens.show ()
-
-    banner ("Names of customers who have deposits at all branches located in Athens")
-    val allAthens = deposit.π ("cname, bname") / inAthens
-    allAthens.create_index ()
-    allAthens.show ()
-
-    import Table.{avg, count}
-
-    banner ("Branch names and their average balances")
-    val avgBalance = deposit.γ ("bname").aggregate ("bname", (count, "accno"), (avg, "balance"))
-    avgBalance.show ()
-
-end lTableTest
+//@main def lTableTest (): Unit =
+//
+//    // Data Definition Language
+//
+//    val customer = LTable ("customer", "cname, street, ccity", "S, S, S", "cname")
+//    val branch   = LTable ("branch", "bname, assets, bcity", "S, D, S", "bname")
+//    val deposit  = LTable ("deposit", "accno, balance, cname, bname", "I, D, S, S", "accno")
+//    val loan     = LTable ("loan", "loanno, amount, cname, bname", "I, D, S, S", "loanno")
+//
+//    customer.create_index ()
+//    branch.create_index ()
+//
+//    //--------------------------------------------------------------------------
+//    banner ("Populate Database")
+//
+//    customer += ("Peter", "Oak St",   "Bogart")
+//             += ("Paul",  "Elm St",   "Watkinsville")
+//             += ("Mary",  "Maple St", "Athens")
+//    customer.show ()
+//
+//    branch += ("Alps",     20000000.0, "Athens")
+//           += ("Downtown", 30000000.0, "Athens")
+//           += ("Lake",     10000000.0, "Bogart")
+//    branch.show ()
+//
+//    deposit += (11, 2000.0, "Peter", "Lake")
+//            += (12, 1500.0, "Paul",  "Alps")
+//            += (13, 2500.0, "Paul",  "Downtown")
+//            += (14, 2500.0, "Paul",  "Lake")
+//            += (15, 3000.0, "Mary",  "Alps")
+//            += (16, 1000.0, "Mary",  "Downtown")
+//    deposit.show ()
+//
+//    loan += (21, 2200.0, "Peter", "Alps")
+//         += (22, 2100.0, "Peter", "Downtown")
+//         += (23, 1500.0, "Paul",  "Alps")
+//         += (24, 2500.0, "Paul",  "Downtown")
+//         += (25, 3000.0, "Mary",  "Alps")
+//         += (26, 1000.0, "Mary",  "Lake")
+//    loan.show ()
+//
+//    deposit.addLinkage ("cname", customer)
+//    deposit.addLinkage ("bname", branch)
+//    loan.addLinkage ("cname", customer)
+//    loan.addLinkage ("bname", branch)
+//
+//    //--------------------------------------------------------------------------
+//    banner ("Show Table Statistics")
+//
+//    customer.stats.show ()
+//    branch.stats.show ()
+//    deposit.stats.show ()
+//    loan.stats.show ()
+//
+//    //--------------------------------------------------------------------------
+//    banner ("Example Queries")
+//
+//    banner ("Names of customers who live in Athens")
+//    val liveAthens = customer.σ ("ccity == 'Athens'").π ("cname")
+//    liveAthens.show ()
+//
+//    banner ("Names of customers who bank (deposits) in Athens")
+////  val bankAthens = (deposit ⋈ branch).σ ("bcity == 'Athens'").π ("cname")
+//    val bankAthens = (deposit ⋈ (("bname", branch.σ ("bcity == 'Athens'")))).π ("cname")
+//    bankAthens.show ()
+//
+//    banner ("Names of customers who live or bank in Athens")
+//    val liveBank = customer.σ ("ccity == 'Athens'").π ("cname") ⋃
+//                   (deposit ⋈ branch).σ ("bcity == 'Athens'").π ("cname")
+//    liveBank.create_index ()
+//    liveBank.show ()
+//
+//    banner ("Names of customers who live and bank in the same city")
+//    val sameCity = (customer ⋈ deposit ⋈ branch).σ ("ccity == bcity").π ("cname")
+//    sameCity.create_index ()
+//    sameCity.show ()
+//
+//    banner ("Names and account numbers of customers with the largest balance")
+//    val largest = deposit.π ("cname, accno") - (deposit ⋈ ("balance < balance", deposit)).π ("cname, accno")
+//    largest.show ()
+//
+//    banner ("Names of customers who are silver club members")
+//    val silver = (loan.π ("cname, bname") ⋂ deposit.π ("cname, bname")).π ("cname")
+//    silver.create_index ()
+//    silver.show ()
+//
+//    banner ("Names of customers who are gold club members")
+//    val gold = loan.π ("cname") - (loan.π ("cname, bname") - deposit.π ("cname, bname")).π ("cname")
+//    gold.create_index ()
+//    gold.show ()
+//
+//    banner ("Names of branches located in Athens")
+//    val inAthens = branch.σ ("bcity == 'Athens'").π ("bname")
+//    inAthens.show ()
+//
+//    banner ("Names of customers who have deposits at all branches located in Athens")
+//    val allAthens = deposit.π ("cname, bname") / inAthens
+//    allAthens.create_index ()
+//    allAthens.show ()
+//
+//    import Table.{avg, count}
+//
+//    banner ("Branch names and their average balances")
+//    val avgBalance = deposit.γ ("bname").aggregate ("bname", (count, "accno"), (avg, "balance"))
+//    avgBalance.show ()
+//
+//end lTableTest
 
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -297,8 +353,8 @@ end lTableTest
     //--------------------------------------------------------------------------
     banner ("Example Queries")
 
-    banner ("locations of students")
-    val locs = student project ("sname, city")
+    banner ("locations of students with links included ")
+    val locs = course project ("cname, pid")
     locs.show ()
 
     banner ("living in Athens")
@@ -321,23 +377,23 @@ end lTableTest
 
     banner ("course taken: course id")
     val taken_id = takes.join (("sid", student))
-                        .project ("sname, cid")
+                        .project("sname, cid")
     taken_id.show ()
-
-// FIX - fails since linkage must be established for intermediate tables
-
-    banner ("course taken: course name")
-    val taken_nm = takes.join (("sid", student))
-                        .join (("cid", course))
-                        .project ("sname, cname")
-    taken_nm.show ()
-
-    banner ("student taught by")
-    val taught_by = takes.join (("sid", student))
-                         .join (("cid", course))
-                         .join (("pid", professor))
-                         .project ("sname, pname")
-    taught_by.show ()
+//
+//// FIX - fails since linkage must be established for intermediate tables
+//
+//    banner ("course taken: course name")
+//    val taken_nm = takes.join (("sid", student))
+//                        .join (("cid", course))
+//                        .project ("sname, cname")
+//    taken_nm.show ()
+//
+//    banner ("student taught by")
+//    val taught_by = takes.join (("sid", student))
+//                         .join (("cid", course))
+//                         .join (("pid", professor))
+//                         .project ("sname, pname")
+//    taught_by.show ()
 
 end lTableTest2
 
