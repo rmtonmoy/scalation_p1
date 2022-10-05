@@ -467,8 +467,9 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         val pathTable = Bag[Bag [(Edge, String)]]()
 
         for u <- vertices do
+
             for e <- u.edge.getOrElse(elab, null) do
-                if e != null then pathTable ++ Bag((e, elab))               // Assumption: elab will uniqely identify refTab
+                if e != null then pathTable.addOne(Bag((e, elab)))               // Assumption: elab will uniqely identify refTab
             end for
         end for
         pathTable
@@ -633,6 +634,22 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
 
 end GTable
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+/** Class PathTable to show table given a pathtable
+ */
+case class PathTable (pathTable: Bag[Bag[(Edge, String)]]):
+
+    def showPathTable(): Unit =
+        for path <- pathTable do
+            for e <- path do
+                print(f"${e._1.from}\t\t---${e._2}--->\t\t${e._1.to}")
+            end for
+            print("\n")
+        end for
+
+    end showPathTable
+
+end PathTable
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 /** The `gTableTest` main function tests the `GTable` class with queries on the
@@ -814,12 +831,12 @@ end gTableTest
     unio.show ()    
 
     banner ("courses taken: course id")
-    val taken_id = student expand (("cid", course))
-    //taken_id.show ()
+    val taken_id : PathTable = PathTable(student expand (("cid", course)))
+    taken_id.showPathTable()
 
     banner ("courses taken: course name")
-    val taken_nm = student expand (("cid", course))
-    //taken_nm.show ()
+    val taken_nm : PathTable = PathTable(student expand (("cid", course)))
+    taken_nm.showPathTable()
 
     banner ("courses taken: course name via ejoin")
     val taken_ej = student ejoin ("cid", course, "sid") project ("sname, cname")
@@ -833,15 +850,16 @@ end gTableTest
 */
 
     banner ("student taught by")
-    val taught_by = student.expand( student.expand ( ("cid", course)), ("pid", professor))
+    val taught_by : PathTable = PathTable(student.expand( student.expand ( ("cid", course)), ("pid", professor)))
+    taught_by.showPathTable()
     //taught_by.show ()
-
+/*
     banner ("student taught by via ejoin")
     val taught_by2 = student.ejoin ("cid", course, "sid")
                             .ejoin ("pid", professor, "cid")
                             .project ("sname, pname")
     taught_by2.show ()
-
+*/
 /*
     compare to equivalent for `Table` and `LTable`
     takes.join (("sid", student))
