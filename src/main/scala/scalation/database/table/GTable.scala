@@ -92,6 +92,27 @@ case class Vertex (tuple: Tuple):
 end Vertex
 
 
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+/** The `Edge` class includes three parts:  The edge attributes in the form of
+ *  a tuple of values, the source (from) vertex and target (to) vertex.
+ *  @param from   the source vertex
+ *  @param to     the target vertex
+ *  @param tuple  the tuple part of the edge (for edge attributes)
+ */
+class PathTable (pt_name: String, pt_schema: Schema,
+                pt_domain: Domain, pt_key: Schema)
+    extends Table (pt_name, pt_schema, pt_domain, pt_key)
+        with Serializable:
+
+    val vertices = Bag [Vertex_] ()                                         // collection of related vertices
+    val edgeType = Map [String, (VTable, Boolean)] ()        
+
+
+end PathTable
+
+
+
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 /** The `GTable` companion object provides factory functions for creating graph-tables.
  *  Supported domains/data-types are 'D'ouble, 'I'nt, 'L'ong, 'S'tring, and 'T'imeNum.
@@ -532,7 +553,11 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      *  @param ref  the foreign key reference (edge-label, referenced table)
      */
     def expand (x: Schema, ref: (String, GTable)): GTable =
-        val (elab, refTab) = ref                                            // edge-label, referenced table
+
+        
+        val (elab, refTab) = ref
+        println(stringOf(schema))                                           // edge-label, referenced table
+        println(stringOf(refTab.schema))
 //      val x1 = schema intersect x                                         // attributes from first table
         val x1 = meet (schema, x)                                           // attributes from first table
         val x2 = meet (refTab.schema, x)                                    // attributes from second table
@@ -541,9 +566,11 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
 
         val s = new GTable (s"${name}_x_${cntr.inc ()}", x, newDom, x)
 
-        for u <- vertices do                                                // iterate over first table vertices
+        for u <- vertices do
+            println(stringOf(u))                                               // iterate over first table vertices
             val t1 = pull (u.tuple, x1)                                     // pull values from vertex u
-            for v <- u.neighbors (ref) do                                   // iterate over second table vertices
+            for v <- u.neighbors (ref) do    
+                println("        " + stringOf(v))                               // iterate over second table vertices
                 val t2 = refTab.pull (v.tuple, x2)                          // pull values from vertex v
                 val w  = Vertex (t1 ++ t2)                                  // collect all attribute values
                 s.vertices += w                                             // add vertex w to GTable s
@@ -1019,3 +1046,99 @@ end gTableTest2
 
 end gTableTest3
 
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+/** The `gTableTest2` main function tests the `GTable` class with queries on the
+ *  Student-Course-Professor database.
+ *  > runMain scalation.database.table.gTableTestExp
+ */
+@main def gTableTestExp (): Unit =
+
+    // Data Definition Language
+
+    val student   = GTable ("student",   "sid, sname, street, city, dept, level",
+                                         "I, S, S, S, S, I", "sid")
+    val professor = GTable ("professor", "pid, pname, street, city, dept",
+                                         "I, S, S, S, S", "pid")
+    val course    = GTable ("course",    "cid, cname, hours, dept",
+                                         "I, X, I, S", "cid")
+
+    student.addEdgeType ("cid", course, false)                // student has M courses
+    course.addEdgeType ("sid", student, false)                // course has M students
+    course.addEdgeType ("pid", professor)                     // course has 1 professor
+    student.addEdgeType ("likes", professor, false)
+
+    //--------------------------------------------------------------------------
+    banner ("Populate Database")
+
+    val v_Peter = student.addV (101, "Peter", "Oak St",   "Bogart",       "CS", 3)
+    val v_Paul  = student.addV (102, "Paul",  "Elm St",   "Watkinsville", "CE", 4)
+    val v_Mary  = student.addV (103, "Mary",  "Maple St", "Athens",       "CS", 4)
+
+    val v_DrBill = professor.addV (104, "DrBill", "Plum St", "Athens",       "CS")
+    val v_DrJohn = professor.addV (105, "DrJohn", "Pine St", "Watkinsville", "CE")
+
+    val v_Database     = course.addV (4370, "Database Management", 4, "CS")
+    val v_Architecture = course.addV (4720, "Comp. Architecture",  4, "CE")
+    val v_Networks     = course.addV (4760, "Computer Networks",   4, "CS")
+
+    student.add2E ("cid", Edge (v_Peter, v_Database),     "sid", course)
+           .add2E ("cid", Edge (v_Peter, v_Architecture), "sid", course)
+           .add2E ("cid", Edge (v_Paul,  v_Database),     "sid", course)
+           .add2E ("cid", Edge (v_Paul,  v_Networks),     "sid", course)
+           .add2E ("cid", Edge (v_Mary,  v_Networks),     "sid", course)
+ 
+    course.addE ("pid", Edge (v_Database,     v_DrBill))
+          .addE ("pid", Edge (v_Architecture, v_DrBill))
+          .addE ("pid", Edge (v_Networks,     v_DrJohn))
+
+    student.addE ("likes", Edge (v_Peter, v_DrBill))
+           .addE ("likes", Edge (v_Paul, v_DrBill))
+           .addE ("likes", Edge (v_Mary, v_DrJohn))
+
+    banner ("Show vertex-tables")
+
+    student.show ()
+    professor.show ()
+    course.show ()
+
+    banner ("Show edge-tables")
+
+    // student.edgeTable (("*", course)).show ()
+    student.edgeTable (("cid", course)).show ()
+    course.edgeTable (("pid", professor)).show ()      
+
+    //--------------------------------------------------------------------------
+    banner ("Example Queries")
+
+    // banner ("locations of students")
+    // val locs = student project ("sname, city")
+    // locs.show ()
+
+    // banner ("living in Athens")
+    // val inAthens = student select ("city == 'Athens'")
+    // inAthens.show ()
+
+    // banner ("not living in Athens")
+    // val notAthens = student minus inAthens
+    // notAthens.show ()
+
+    // banner ("student intersect inAthens")
+    // val inters = student intersect inAthens
+    // inters.show ()
+
+    // banner ("in-Athens union not-in-Athens")
+    // val unio = inAthens union notAthens
+    // unio.show ()    
+
+    banner ("courses taken: course name")
+    val taken_nm = student expand ("sname, cname", ("cid", course))
+    taken_nm.show ()  
+
+    banner ("courses taken: course id")
+    val taken_id = student expand ("sname, pname", ("likes", professor))
+    taken_id.show ()
+
+
+
+end gTableTestExp
