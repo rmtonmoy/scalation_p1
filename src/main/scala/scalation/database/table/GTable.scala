@@ -85,6 +85,15 @@ case class Vertex (tuple: Tuple):
     end neighbors
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** Return the edge map associate with a particular vertex
+     * 
+     */ 
+    def getEdge (): Map [String, Bag [Edge]] =
+        edge 
+    end getEdge  
+    
+
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Convert the tuple within this vertex to a string.
      */
     override def toString: String = s"vertex: ${stringOf (tuple)}"
@@ -218,6 +227,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
 
     val vertices = Bag [Vertex] ()                                          // collection of related vertices
     val edgeType = Map [String, (GTable, Boolean)] ()                       // collection of outgoing edge types
+    val edgeTypeNames = edgeType.keySet
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Return whether this graph-table contains tuple u.
@@ -554,18 +564,27 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      */
     def expand (x: Schema, ref: (String, GTable)): GTable =
 
-        if x == "*" then println("TRUE")
-        else
         val (elab, refTab) = ref
-        println(stringOf(schema))                                           // edge-label, referenced table
-        println(stringOf(refTab.schema))
-//      val x1 = schema intersect x                                         // attributes from first table
-        val x1 = meet (schema, x)                                           // attributes from first table
-        val x2 = meet (refTab.schema, x)                                    // attributes from second table
+        var x1 = Array[String] ()
+        var x2 = Array[String] ()
+        
+        for a <- edgeTypeNames do println(a)
+
+        if x(0) == "*" then 
+            x1 = schema
+            x2 = refTab.schema 
+        else 
+    //      val x1 = schema intersect x                                         // attributes from first table
+            x1 = meet (schema, x)                                           // attributes from first table
+            x2 = meet (refTab.schema, x)                                    // attributes from second table
+        end if
+
         val newDom = pull (x1) ++ refTab.pull (x2)                          // corresponding domains
         debug ("expand", s"x1 = ${stringOf (x1)}, x2 = ${stringOf (x2)}, newDom = ${stringOf (newDom)}")
 
         val s = new GTable (s"${name}_x_${cntr.inc ()}", x, newDom, x)
+
+        println(stringOf(vertices(0).getEdge()))
 
         for u <- vertices do
             println(stringOf(u))                                               // iterate over first table vertices
@@ -580,6 +599,68 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     end expand
 
     def expand (xs: String, ref: (String, GTable)): GTable = expand (strim (xs), ref)
+
+
+
+
+
+
+
+
+
+    // //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // /** Expand and extract schema x from this graph-table and the referenced table.
+    //  *  Acts as a lightweight join-project operator that only extracts attributes
+    //  *  in schema x and does not create new edges.
+    //  *  FIX:  for wild-card "*" extract all attributes
+    //  *  @see https://arxiv.org/pdf/1806.07344.pdf
+    //  *  @param x    the attributes to extract/collect from this and the referenced table.
+    //  *  @param ref  the foreign key reference (edge-label, referenced table)
+    //  */
+    // def expand_new (x: Schema, ref: (String, GTable)): GTable =
+
+    //     val (elab, refTab) = ref
+    //     var x1 = Array[String] ()
+    //     var x2 = Array[String] ()
+
+    //     if x(0) == "*" then 
+    //         x1 = schema
+    //         x2 = refTab.schema 
+    //     else 
+    // //      val x1 = schema intersect x                                         // attributes from first table
+    //         x1 = meet (schema, x)                                           // attributes from first table
+    //         x2 = meet (refTab.schema, x)                                    // attributes from second table
+    //     end if
+
+    //     val newDom = pull (x1) ++ refTab.pull (x2)                          // corresponding domains
+    //     debug ("expand_new", s"x1 = ${stringOf (x1)}, x2 = ${stringOf (x2)}, newDom = ${stringOf (newDom)}")
+
+    //     val s = new GTable (s"${name}_x_${cntr.inc ()}", x, newDom, x)
+    //     val bb = new Bag ()
+
+    //     for u <- vertices do
+    //         println(stringOf(u))                                               // iterate over first table vertices
+    //         val t1 = pull (u.tuple, x1)                                     // pull values from vertex u
+    //         for v <- u.neighbors (ref) do    
+    //             println("        " + stringOf(v))                               // iterate over second table vertices
+    //             val t2 = refTab.pull (v.tuple, x2)                          // pull values from vertex v
+    //             val w  = Vertex (t1 ++ t2) 
+    //             val vb = Bag [Vertex](u, v)                                 // collect all attribute values
+    //             s.vertices += w                                             // add vertex w to GTable s
+    //             bb += vb 
+    //     end for
+    //     println(stringOf(bb))
+    //     s
+    // end expand_new
+
+    // def expand_new (xs: String, ref: (String, GTable)): GTable = expand_new (strim (xs), ref)  
+
+
+
+
+
+
+
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Compute the EDGE JOIN of this graph-table and the referenced table keeping
@@ -1139,6 +1220,10 @@ end gTableTest3
     banner ("courses taken: course id")
     val taken_id = student expand ("sname, pname", ("likes", professor))
     taken_id.show ()
+
+    banner ("TEST")
+    val test = student expand ("*", ("likes", professor))
+    test.show ()
 
 
 
