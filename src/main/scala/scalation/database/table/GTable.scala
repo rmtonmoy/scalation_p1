@@ -18,6 +18,8 @@ import java.io.{BufferedReader, PrintWriter}
 import java.io.{FileInputStream, FileOutputStream}
 import java.io.{ObjectInputStream, ObjectOutputStream}
 
+import scala.collection.mutable.{HashMap => IndexMap}
+import scalation.database.{HashMultiMap => MIndexMap}
 import scala.collection.mutable.{ArrayBuffer => Bag, Map}
 import scala.math.min
 import scala.runtime.ScalaRunTime.stringOf
@@ -209,6 +211,77 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     def getPkey (v: Vertex): Tuple = pull (v.tuple, key)
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** CREATE/recreate the primary INDEX that maps the primary key to the tuple
+     *  containing it.  Warning, creating an index will remove DUPLICATES based
+     *  on maintaining UNIQUENESS CONSTRAINT of primary key values.
+     *  @param rebuild  if rebuild is true, use old index to build new index; otherwise, create new index
+     */
+    override def create_index (rebuild: Boolean = false): Unit =
+        debug ("create_index", s"create an index of type ${index.getClass.getName}")
+        if rebuild then flaw ("create_index", "rebuilding off old primary key index has not yet been implemented")
+        index.clear ()
+        val toRemove = Bag [Vertex] ()
+        for v <- vertices do
+            println(v)
+            val pkey = new KeyType (pull (v.tuple, key))                           // primary key
+            if index.getOrElse (pkey, null) == null then index += pkey -> v.tuple
+            else toRemove += v
+        end for
+        //debug ("create_index", s"remove duplicate tuples = ${showT (toRemove)}")
+        vertices --= toRemove
+        hasIndex = true
+    end create_index
+
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** CREATE a secondary unique INDEX that maps a secondary key to the tuple
+     *  containing it.  Has no effect on duplicates; should first create a primary
+     *  index to remove duplicates, otherwise, this index may skip tuples.
+     *  @param atr  the attribute/column to create the index on
+     */
+    override def create_sindex (atr: String): Unit =
+        debug ("create_sindex", s"create a secondary unique index of type ${index.getClass.getName}")
+        if ! hasIndex then flaw ("create_sindex", "should first create a primary index to eliminate duplicates")
+        val newIndex = IndexMap [ValueType, Tuple] ()
+        for v <- vertices do
+            val skey = (pull (v.tuple, atr))                                       // secondary (non-composite) key
+            newIndex += skey -> v.tuple                                            // add key-value pair into new index
+        end for
+        sindex += atr -> newIndex                                            // add new index into the sindex map
+    end create_sindex
+
+    // //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // /** The create_index method helps, e.g., the popTable, methods to generate
+    //  *  an index for the table.
+    //  *  @param reset  if reset is true, use old index to build new index; otherwise, create new index
+    //  */
+    // override def create_index (reset: Boolean = false): Unit =
+    //     if ! reset then
+    //         for i <- 0 until rows do
+    //             val jkey  = on(key(0))                                         // FIX - restricted to one column
+    //             val mkey  = row(i)(jkey)                                       // key column is specified
+    //             val vertex = row(i)
+    //             index       += mkey -> vertex
+    //             indextoKey  += i -> mkey
+    //             keytoIndex  += mkey -> i
+    //             orderedIndex = orderedIndex :+ mkey
+    //         end for
+    //     else                                                                    // use old index to build
+    //         val newoderedIndex = new VEC [ValueType] ()
+    //         val newkeytoIndex =  new HashMap [ValueType, Int] ()
+    //         for i <- orderedIndex.indices do
+    //             val mkey       = orderedIndex(i)
+    //             val vertex      = row(keytoIndex(mkey))
+    //             index         += mkey -> vertex
+    //             newkeytoIndex += mkey -> i
+    //             newoderedIndex.update (newoderedIndex.length, mkey)
+    //         end for
+    //         orderedIndex = newoderedIndex.toVector                              // map old keytoIndex to rowIndex to
+    //         keytoIndex   = newkeytoIndex
+    //     end if
+    //     hasIndex = true
+    // end create_index
+
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Add an edge type to this graph-table (analog of a foreign key).
      *  @param elab  the edge-label for this edge type
      *  @param to      the graph-table/vertex type for the target vertices
@@ -344,7 +417,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      *  @param condition  the simple condition string "a1 op a2" to be satisfied, where
      *                    a1 is attribute, op is comparison operator, a2 is attribute or value
      */
-    override def select (condition: String): Table =
+    override def select (condition: String): GTable =
         val s = new GTable (s"${name}_s_${cntr.inc ()}", schema, domain, key)
 
         val (tok, twoAtrs) = parseCond (condition)
@@ -751,11 +824,11 @@ end GTable
     banner ("Example Queries")
 
     banner ("live in Athens")
-    val liveAthens = customer.σ ("ccity == 'Athens'").π ("cname") 
+    val liveAthens = customer.select ("ccity == 'Athens'").project ("cname") 
     liveAthens.show ()
 
     banner ("bank in Athens")
-    val bankAthens = (deposit ⋈ (("bname", branch.σ ("bcity == 'Athens'")))) //.π ("cname")
+    val bankAthens = (deposit.ejoin (("bname", branch.select ("bcity == 'Athens'"), "accno"))) //.π ("cname")
     bankAthens.show ()
 
 end gTableTest
