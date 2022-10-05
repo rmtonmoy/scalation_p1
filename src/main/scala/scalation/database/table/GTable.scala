@@ -554,7 +554,8 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      */
     def expand (x: Schema, ref: (String, GTable)): GTable =
 
-        
+        if x == "*" then println("TRUE")
+        else
         val (elab, refTab) = ref
         println(stringOf(schema))                                           // edge-label, referenced table
         println(stringOf(refTab.schema))
