@@ -17,8 +17,8 @@ import com.google.gson.Gson
 import java.io.{BufferedReader, PrintWriter}
 import java.io.{FileInputStream, FileOutputStream}
 import java.io.{ObjectInputStream, ObjectOutputStream}
-
-import scala.collection.mutable.{ArrayBuffer => Bag, Map}
+import scala.collection.convert.ImplicitConversions.`seq AsJavaList`
+import scala.collection.mutable.{Map, ArrayBuffer as Bag}
 import scala.math.min
 import scala.runtime.ScalaRunTime.stringOf
 
@@ -439,36 +439,41 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         s
     end intersect
 
+
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    /** Expand and extract schema x from this graph-table and the referenced table.
-     *  Acts as a lightweight join-project operator that only extracts attributes
-     *  in schema x and does not create new edges.
-     *  FIX:  for wildcard "*" extract all attributes
-     *  @see https://arxiv.org/pdf/1806.07344.pdf
-     *  @param x    the attributes to extract/collect from this and the referenced table.
-     *  @param ref  the foreign key reference (edge-label, referenced table)
+
+    /** Expand: expanding a pathTable
      */
-    def expand (x: Schema, ref: (String, GTable)): GTable =
-        val (elab, refTab) = ref                                            // edge-label, referenced table
-//      val x1 = schema intersect x                                         // attributes from first table
-        val x1 = meet (schema, x)                                           // attributes from first table
-        val x2 = meet (refTab.schema, x)                                    // attributes from second table
-        val newDom = pull (x1) ++ refTab.pull (x2)                          // corresponding domains
-        debug ("expand", s"x1 = ${stringOf (x1)}, x2 = ${stringOf (x2)}, newDom = ${stringOf (newDom)}")
+    def expand(oldPathTable: Bag[Bag[(Edge, String)]], ref: (String, GTable)): Bag[Bag[(Edge, String)]] =
+        val (elab, refTab) = ref                                    // edge-label, referenced table
+        val pathTable = oldPathTable
 
-        val s = new GTable (s"${name}_x_${cntr.inc ()}", x, newDom, x)
-
-        for u <- vertices do                                                // iterate over first table vertices
-            val t1 = pull (u.tuple, x1)                                     // pull values from vertex u
-            for v <- u.neighbors (ref) do                                   // iterate over second table vertices
-                val t2 = refTab.pull (v.tuple, x2)                          // pull values from vertex v
-                val w  = Vertex (t1 ++ t2)                                  // collect all attribute values
-                s.vertices += w                                             // add vertex w to GTable s
+        var counter: Int = -1
+        for path <- oldPathTable do
+            counter = counter + 1
+            val u = path.last._1.to
+            for e <- u.edge.getOrElse(elab, null) do               // Assumption: elab will uniqely identify refTab
+                if e != null then pathTable.get(counter).addOne((e, elab))
+            end for
         end for
-        s
+        pathTable
     end expand
 
-    def expand (xs: String, ref: (String, GTable)): GTable = expand (strim (xs), ref)
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** Expand: Making a pathTable
+     */
+    def expand (ref: (String, GTable)): Bag[Bag[(Edge, String)]] =
+        val (elab, refTab) = ref                                            // edge-label, referenced table
+        val pathTable = Bag[Bag [(Edge, String)]]()
+
+        for u <- vertices do
+            for e <- u.edge.getOrElse(elab, null) do
+                if e != null then pathTable ++ Bag((e, elab))               // Assumption: elab will uniqely identify refTab
+            end for
+        end for
+        pathTable
+    end expand
+
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Compute the EDGE JOIN of this graph-table and the referenced table keeping
@@ -809,12 +814,12 @@ end gTableTest
     unio.show ()    
 
     banner ("courses taken: course id")
-    val taken_id = student expand ("sname, cid", ("cid", course))
-    taken_id.show ()
+    val taken_id = student expand (("cid", course))
+    //taken_id.show ()
 
     banner ("courses taken: course name")
-    val taken_nm = student expand ("sname, cname", ("cid", course))
-    taken_nm.show ()
+    val taken_nm = student expand (("cid", course))
+    //taken_nm.show ()
 
     banner ("courses taken: course name via ejoin")
     val taken_ej = student ejoin ("cid", course, "sid") project ("sname, cname")
@@ -828,9 +833,8 @@ end gTableTest
 */
 
     banner ("student taught by")
-    val taught_by = student.expand ("sname, cid", ("cid", course))
-                           .expand ("sname, pname", ("pid", professor))
-    taught_by.show ()
+    val taught_by = student.expand( student.expand ( ("cid", course)), ("pid", professor))
+    //taught_by.show ()
 
     banner ("student taught by via ejoin")
     val taught_by2 = student.ejoin ("cid", course, "sid")

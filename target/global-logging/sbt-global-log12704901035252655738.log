@@ -1,4 +1,8 @@
-[debug] Acquiring lock on file D:\dbms\PROJECT_1\scalation_2.0\project\target\.sbt-compilation-infos\scalation-compile\.sbt-idea-lock ...
+[debug] > Exec(runMain scalation.database.table.gTableTest2, None, None)
+[debug] Evaluating tasks: Compile / runMain
+[debug] Running task... Cancel: Signal, check cycles: false, forcegc: true
+[info] compiling 359 Scala sources to D:\dbms\PROJECT_1\scalation_2.0\target\scala-3.2.0\classes ...
+[warn] Canceling execution...
 [error] -- [E006] Not Found Error: D:\dbms\PROJECT_1\scalation_2.0\src\main\scala\scalation\database\table\GTable.scala:456:44 
 [error] 456 |                if e != null then pathTable[counter] ++ ((e, elab))
 [error]     |                                            ^^^^^^^
@@ -261,3 +265,7 @@
 [error]       scalation.database.table.GTable
 [error]  ordering: 
 [error] 7 errors found
+[error] Cancelled: runMain scalation.database.table.gTableTest2
+[error] Cancelled: runMain scalation.database.table.gTableTest2
+[error] Use 'last' for the full log.
+[debug] > Exec(idea-shell, None, None)

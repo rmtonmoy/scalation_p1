@@ -321,7 +321,7 @@ end kGTableTest
     banner ("all people living in Athens")
     val people_Athens = person.all () select ("city == 'Athens'")
     people_Athens.show ()
-
+/*
     banner ("courses taken: course id")
     val taken_id = student expand ("name, cid", ("cid", course))
     taken_id.show ()
@@ -359,6 +359,6 @@ end kGTableTest
          .join (("pid", professor))
          .project ("sname, pname")
 */
-
+*/
 end kGTableTest2
 
