@@ -12,6 +12,9 @@ package scalation
 package database
 package table 
 
+import scala.collection.mutable.{HashMap => IndexMap}
+import scalation.database.{HashMultiMap => MIndexMap}
+
 import scala.collection.mutable.{ArrayBuffer => Bag, Map}
 import scala.runtime.ScalaRunTime.stringOf
 
@@ -108,10 +111,96 @@ case class VTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
     override def contains (t: Tuple): Boolean = vertices.exists (_.tuple sameElements t)
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** Return the j-th column in this table (or the passed in tuples) as an array of value-type.
+     *  @param j     the column to return
+     *  @param tups  the collection of tuples to use (defaults to all tuples in this table)
+     */
+    def v_col (j: Int, verts: Bag [Vertex_] = vertices): Array [ValueType] =
+        //print(j, verts.size, schema.size)
+        if j >= schema.size then
+            flaw ("col", s"column index i = $j exceeds the number of columns")
+        end if
+        val c = Array.ofDim [ValueType] (verts.size)
+        var counter = 0
+        for i <- verts do 
+            c(counter) = i.tuple(j)
+            counter += 1
+        // for i <- c.indices do c(i) = vertices(i)(j)
+        // for i <- c.indices do println(" " + c(i))
+        c
+    end v_col
+
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** Return the basic statistics for each column of this table.
+     */
+    override def stats: Table =
+        val s = new Table (s"${name}_stats",
+                           Array ("column", "count", "countd", "min", "max", "sum", "avg"),
+                           Array ('S', 'I', 'I', 'S', 'S', 'D', 'D'), Array ("column"))
+
+        for j <- colIndices do s add Table.stats (schema(j), v_col(j))
+        s
+    end stats
+
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Return the primary key for the given vertex.
      *  @param v  the given vertex
      */
     def getPkey (v: Vertex_): Tuple = pull (v.tuple, key)
+
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** CREATE/recreate the primary INDEX that maps the primary key to the tuple
+     *  containing it.  Warning, creating an index will remove DUPLICATES based
+     *  on maintaining UNIQUENESS CONSTRAINT of primary key values.
+     *  @param rebuild  if rebuild is true, use old index to build new index; otherwise, create new index
+     */
+    override def create_index (rebuild: Boolean = false): Unit =
+        debug ("create_index", s"create an index of type ${index.getClass.getName}")
+        if rebuild then flaw ("create_index", "rebuilding off old primary key index has not yet been implemented")
+        index.clear ()
+        val toRemove = Bag [Vertex_] ()
+        for v <- vertices do
+            val pkey = new KeyType (pull (v.tuple, key))                           // primary key
+            if index.getOrElse (pkey, null) == null then index += pkey -> v.tuple
+            else toRemove += v
+        end for
+        //debug ("create_index", s"remove duplicate tuples = ${showT (toRemove)}")
+        vertices --= toRemove
+        hasIndex = true
+    end create_index
+
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** CREATE a secondary unique INDEX that maps a secondary key to the tuple
+     *  containing it.  Has no effect on duplicates; should first create a primary
+     *  index to remove duplicates, otherwise, this index may skip tuples.
+     *  @param atr  the attribute/column to create the index on
+     */
+    override def create_sindex (atr: String): Unit =
+        debug ("create_sindex", s"create a secondary unique index of type ${index.getClass.getName}")
+        if ! hasIndex then flaw ("create_sindex", "should first create a primary index to eliminate duplicates")
+        val newIndex = IndexMap [ValueType, Tuple] ()
+        for v <- vertices do
+            val skey = (pull (v.tuple, atr))                                       // secondary (non-composite) key
+            newIndex += skey -> v.tuple                                            // add key-value pair into new index
+        end for
+        sindex += atr -> newIndex                                            // add new index into the sindex map
+    end create_sindex
+
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** CREATE a non-unique INDEX (multi-valued) that maps a non-unique attribute
+     *  to the tuple containing it.
+     *  @see `scalation.database.MultiMap`
+     *  @param atr  the attribute/column to create the non-unique index on
+     */
+    override def create_mindex (atr: String): Unit =
+        debug ("create_mindex", s"create a non-unique index of type ${index.getClass.getName}")
+        val newIndex = MIndexMap [ValueType, Tuple] ()
+        for v <- vertices do
+            val v_atr = (pull (v.tuple, atr))                                      // non-unique attribute
+            newIndex.addOne1 (v_atr, v.tuple)                                      // add key-value pair into new index
+        end for
+        mindex += atr -> newIndex                                            // add new index into the mindex map
+    end create_mindex
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Add an edge type to this vertex-table (analog of a foreign key).
@@ -267,12 +356,21 @@ case class VTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
      */
     override def minus (r2: Table): VTable =
         if incompatible (r2) then return this
-
         val s = new VTable (s"${name}_m_${cntr.inc ()}", schema, domain, key)
 
-        for v <- vertices do
-            if ! (r2 contains v.tuple) then s.vertices += v
-        end for
+        if subset(key, schema) then
+            if r2.hasIndex then
+                for v <- vertices do
+                    val t_fkey = new KeyType(pull (v.tuple, key))
+                    val u = r2.index.getOrElse(t_fkey, null)
+                    if u == null then s.vertices += v
+                end for
+            else
+                for v <- vertices do if ! (r2 contains v.tuple) then s.vertices += v 
+            end if
+        else
+            for v <- vertices do if ! (r2 contains v.tuple) then s.vertices += v
+        end if
         s
     end minus
 
@@ -283,12 +381,21 @@ case class VTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
      */
     override def intersect (r2: Table): VTable =
         if incompatible (r2) then return this
-
         val s = new VTable (s"${name}_i_${cntr.inc ()}", schema, domain, key)
 
-        for v <- vertices do
-            if r2 contains v.tuple then s.vertices += v
-        end for
+        if subset(key, schema) then
+            if r2.hasIndex then
+                for v <- vertices do
+                    val t_fkey = new KeyType(pull (v.tuple, key))
+                    val u = r2.index.getOrElse(t_fkey, null)
+                    if u != null then s.vertices += v
+                end for
+            else
+                for v <- vertices do if r2 contains v.tuple then s.vertices += v
+            end if
+        else
+            for v <- vertices do if r2 contains v.tuple then s.vertices += v
+        end if
         s
     end intersect
 
@@ -396,7 +503,7 @@ case class VTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Create an edge table containing all edges with the given edges label
      *  connecting vertices in this vertex-table to vertices in the reference table.
-     *  FIX - allow wild-card (e.g., *) for matching any edge-label
+     *  FIX - allow wild-card (e.g., *) for matching any edge-label -- done
      *  @param ref  the foreign key reference (edge-label, referenced table)
      */
     def edgeTable (ref: (String, Table)): VTable =
@@ -407,10 +514,10 @@ case class VTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Sc
         val s = new VTable (s"${name}_e_${cntr.inc ()}", newKey, newDom, newKey)
 
         for u <- vertices; e <- u.edge do
-            for v <- e._2 do                                                // add elab filter
-                val w = Vertex_ (getPkey (u) ++ getPkey (v))
-                s.vertices += w
-//              debug ("edgeTable", s"add vertex w = $w)")
+            if (elab == "*" || e._1.equals(elab)) then                                             // added wildcard -- done
+                for v <- e._2 do                                            
+                    val w = Vertex_ (getPkey (u) ++ getPkey (v))
+                    s.vertices += w
         end for
         s
     end edgeTable
@@ -551,12 +658,12 @@ end VTable
     //--------------------------------------------------------------------------
     banner ("Show Table Statistics")
 
-/*
-    customer.stats.show ()         // FIX - add support
+
+    customer.stats.show ()         // FIX - add support | completely remake col method?
     branch.stats.show ()
     deposit.stats.show ()
     loan.stats.show ()
-*/
+
 
     //--------------------------------------------------------------------------
     banner ("Example Queries")
@@ -621,8 +728,21 @@ end vTableTest
     professor.show ()
     course.show ()
 
-    banner ("Edge Table")
+    banner ("Student Edge Table")
     student.edgeTable (("*", course)).show ()
+
+    banner("Course->Student Edge Table")
+    course.edgeTable(("sid", student)).show()
+
+    banner("Course->Professor Edge Table")
+    course.edgeTable(("pid", professor)).show()
+
+    banner("Course->* Edge Table")
+    course.edgeTable(("*", student)).show()
+
+    student.stats.show()
+    professor.stats.show()
+    course.stats.show()
 
     //--------------------------------------------------------------------------
     banner ("Example Queries")
@@ -634,6 +754,18 @@ end vTableTest
     banner ("living in Athens")
     val inAthens = student select ("city == 'Athens'")
     inAthens.show ()
+    inAthens.create_index()
+    inAthens.create_sindex("sname")
+
+    // for si <- inAthens.sindex do
+    //     println(si)
+    // end for
+
+    inAthens.create_mindex("city")
+
+    // for mi <- inAthens.mindex do
+    //     println(mi)
+    // end for
 
     banner ("not living in Athens")
     val notAthens = student minus inAthens
@@ -642,6 +774,11 @@ end vTableTest
     banner ("student intersect inAthens")
     val inters = student intersect inAthens
     inters.show ()
+
+    return
+
+    banner("test")
+    val u_a = student union student
 
     banner ("in-Athens union not-in-Athens")
     val unio = inAthens union notAthens
