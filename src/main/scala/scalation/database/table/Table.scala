@@ -395,9 +395,11 @@ class Table (override val name: String, override val schema: Schema,
      *  @param tups  the collection of tuples to use (defaults to all tuples in this table)
      */
     def col (j: Int, tups: Bag [Tuple] = tuples): Array [ValueType] =
+
         if j >= schema.size then
             flaw ("col", s"column index j = $j exceeds the number of columns")
         end if
+
         val c = Array.ofDim [ValueType] (tups.size)
         for i <- c.indices do c(i) = tups(i)(j)
         c
@@ -1780,4 +1782,3 @@ end tableTest2
     covid.writeJSON ()
 
 end tableTest3
-

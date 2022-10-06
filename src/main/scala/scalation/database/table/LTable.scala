@@ -340,4 +340,3 @@ end lTableTest
     taught_by.show ()
 
 end lTableTest2
-
