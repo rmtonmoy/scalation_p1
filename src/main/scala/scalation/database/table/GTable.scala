@@ -1,4 +1,3 @@
-
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 /** @author  John Miller
  *  @version 2.0
@@ -18,8 +17,6 @@ import java.io.{BufferedReader, PrintWriter}
 import java.io.{FileInputStream, FileOutputStream}
 import java.io.{ObjectInputStream, ObjectOutputStream}
 
-import scala.collection.mutable.{HashMap => IndexMap}
-import scalation.database.{HashMultiMap => MIndexMap}
 import scala.collection.mutable.{ArrayBuffer => Bag, Map}
 import scala.math.min
 import scala.runtime.ScalaRunTime.stringOf
@@ -53,7 +50,7 @@ end Edge
  */
 case class Vertex (tuple: Tuple):
 
-    val edge = Map [String, Bag [Edge]] ()                      // map edge-label -> { edges } 
+    val edge = Map [String, Bag [Edge]] ()                      // map edge-label -> { edges }
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Return the neighboring vertices reachable in one-hop by taking edges
@@ -197,6 +194,9 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
 
     val vertices = Bag [Vertex] ()                                          // collection of related vertices
     val edgeType = Map [String, (GTable, Boolean)] ()                       // collection of outgoing edge types
+    
+    //***********NEW***********************//
+    val edgeTypeC = Map [String, Vertex] ()                                //edge type that points to a vertex rather than a GTable
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Return whether this graph-table contains tuple u.
@@ -211,77 +211,6 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     def getPkey (v: Vertex): Tuple = pull (v.tuple, key)
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    /** CREATE/recreate the primary INDEX that maps the primary key to the tuple
-     *  containing it.  Warning, creating an index will remove DUPLICATES based
-     *  on maintaining UNIQUENESS CONSTRAINT of primary key values.
-     *  @param rebuild  if rebuild is true, use old index to build new index; otherwise, create new index
-     */
-    override def create_index (rebuild: Boolean = false): Unit =
-        debug ("create_index", s"create an index of type ${index.getClass.getName}")
-        if rebuild then flaw ("create_index", "rebuilding off old primary key index has not yet been implemented")
-        index.clear ()
-        val toRemove = Bag [Vertex] ()
-        for v <- vertices do
-            println(v)
-            val pkey = new KeyType (pull (v.tuple, key))                           // primary key
-            if index.getOrElse (pkey, null) == null then index += pkey -> v.tuple
-            else toRemove += v
-        end for
-        //debug ("create_index", s"remove duplicate tuples = ${showT (toRemove)}")
-        vertices --= toRemove
-        hasIndex = true
-    end create_index
-
-    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    /** CREATE a secondary unique INDEX that maps a secondary key to the tuple
-     *  containing it.  Has no effect on duplicates; should first create a primary
-     *  index to remove duplicates, otherwise, this index may skip tuples.
-     *  @param atr  the attribute/column to create the index on
-     */
-    override def create_sindex (atr: String): Unit =
-        debug ("create_sindex", s"create a secondary unique index of type ${index.getClass.getName}")
-        if ! hasIndex then flaw ("create_sindex", "should first create a primary index to eliminate duplicates")
-        val newIndex = IndexMap [ValueType, Tuple] ()
-        for v <- vertices do
-            val skey = (pull (v.tuple, atr))                                       // secondary (non-composite) key
-            newIndex += skey -> v.tuple                                            // add key-value pair into new index
-        end for
-        sindex += atr -> newIndex                                            // add new index into the sindex map
-    end create_sindex
-
-    // //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    // /** The create_index method helps, e.g., the popTable, methods to generate
-    //  *  an index for the table.
-    //  *  @param reset  if reset is true, use old index to build new index; otherwise, create new index
-    //  */
-    // override def create_index (reset: Boolean = false): Unit =
-    //     if ! reset then
-    //         for i <- 0 until rows do
-    //             val jkey  = on(key(0))                                         // FIX - restricted to one column
-    //             val mkey  = row(i)(jkey)                                       // key column is specified
-    //             val vertex = row(i)
-    //             index       += mkey -> vertex
-    //             indextoKey  += i -> mkey
-    //             keytoIndex  += mkey -> i
-    //             orderedIndex = orderedIndex :+ mkey
-    //         end for
-    //     else                                                                    // use old index to build
-    //         val newoderedIndex = new VEC [ValueType] ()
-    //         val newkeytoIndex =  new HashMap [ValueType, Int] ()
-    //         for i <- orderedIndex.indices do
-    //             val mkey       = orderedIndex(i)
-    //             val vertex      = row(keytoIndex(mkey))
-    //             index         += mkey -> vertex
-    //             newkeytoIndex += mkey -> i
-    //             newoderedIndex.update (newoderedIndex.length, mkey)
-    //         end for
-    //         orderedIndex = newoderedIndex.toVector                              // map old keytoIndex to rowIndex to
-    //         keytoIndex   = newkeytoIndex
-    //     end if
-    //     hasIndex = true
-    // end create_index
-
-    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Add an edge type to this graph-table (analog of a foreign key).
      *  @param elab  the edge-label for this edge type
      *  @param to      the graph-table/vertex type for the target vertices
@@ -291,6 +220,21 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         edgeType    += elab -> (to, unique)
         to.edgeType += elab -> (this, false)
     end addEdgeType
+
+    
+    //********************NEW******************************//
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** Add an edge type to this vertex.
+     *  @param elab  the edge-label for this edge type
+     *  @param to      the target vertex
+     */
+    def addEdgeTypeC (elab: String, to: Vertex): Unit =   
+        edgeTypeC    += elab -> (to)
+    end addEdgeTypeC
+
+
+
+
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Add a vertex to this graph-table (analog of a tuple).
@@ -317,6 +261,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      */
     def addE (u: Vertex, elab: String, e: Edge): GTable =
         val eType = edgeType
+        val eTypeC = edgeTypeC
         if eType.keySet contains elab then
             val eset = u.edge.getOrElse (elab, null)
 
@@ -326,7 +271,17 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
             else
                 eset += e
             end if
-        else 
+
+        //***************NEW*****************//
+        // allow edgeTypeC to be checked    // 
+        else if eTypeC.keySet contains elab then
+            val esetC = u.edge.getOrElse (elab, null)
+
+            if esetC == null then u.edge += elab -> Bag (e)
+            else
+                esetC += e
+            end if
+        else    
             flaw ("addE", s"elab = $elab not an edge type for $name")
         end if
         this
@@ -417,7 +372,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      *  @param condition  the simple condition string "a1 op a2" to be satisfied, where
      *                    a1 is attribute, op is comparison operator, a2 is attribute or value
      */
-    override def select (condition: String): GTable =
+    override def select (condition: String): Table =
         val s = new GTable (s"${name}_s_${cntr.inc ()}", schema, domain, key)
 
         val (tok, twoAtrs) = parseCond (condition)
@@ -512,21 +467,11 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         s
     end intersect
 
-    // //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    // /** Expand and extract schema x from this graph-table and the referenced table.
-    //  *  Acts as a lightweight join-project operator that only extracts attributes
-    //  *  in schema x and does not create new edges.
-    //  *  FIX:  for wild-card "*" extract all attributes
-    //  */ 
-    // def expand (x: Schema): GTable =
-    //     if x == "*" then expand else edge (elab).map (_.to)
-    // end expand
-
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Expand and extract schema x from this graph-table and the referenced table.
      *  Acts as a lightweight join-project operator that only extracts attributes
      *  in schema x and does not create new edges.
-     *  FIX:  for wild-card "*" extract all attributes
+     *  FIX:  for wildcard "*" extract all attributes
      *  @see https://arxiv.org/pdf/1806.07344.pdf
      *  @param x    the attributes to extract/collect from this and the referenced table.
      *  @param ref  the foreign key reference (edge-label, referenced table)
@@ -567,10 +512,10 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         val s = new GTable (s"${name}_j_${cntr.inc ()}", schema ++ refTab.schema,
                             domain ++ refTab.domain, newKey)
 
-        s.addEdgeType (elab, refTab)                                        // need to know if it is m-m or m-1
-        s.addEdgeType (elab, refTab, false)
+        //s.addEdgeType (elab, refTab)                                        // need to know if it is m-m or m-1
+        //s.addEdgeType (elab, refTab, false)
 
-        for u <- vertices do                                                // iterate over first table vertices
+        for u <- vertices do                                                  // iterate over first table vertices
             for v <- u.neighbors ((elab, refTab)) do                        // iterate over second table vertices
                 debug ("ejoin", s"(u. v) = ($u, $v)")
                 val w = Vertex (u.tuple ++ v.tuple)                         // collect all attribute values
@@ -580,6 +525,38 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         end for
         s
     end ejoin
+
+
+
+    //******************************NEW**************************//
+ //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** Compute the EDGE JOIN of this graph-table and the referenced table keeping
+     *  concatenated vertices that are linked with edges having the given edge-label.
+     *  Replaces fkey = pkey join and uses INDEX-FREE ADJACENCY.
+     *  FIX - allow wild-card (e.g., *) for matching any edge-label
+     *  @param ref  the foreign key reference (edge-label, referenced table)
+     */
+    def ejoin (ref: (String, GTable)): GTable =
+        val (elab, refTab) = ref                                     // edge-label, referenced table, back edge-label
+        val newKey = key ++ refTab.key                                      // FIX - many-to-?
+
+        val s = new GTable (s"${name}_j_${cntr.inc ()}", schema ++ refTab.schema,
+                            domain ++ refTab.domain, newKey)
+
+        //s.addEdgeType (elab, refTab)                                        // need to know if it is m-m or m-1
+        //s.addEdgeType (elab, refTab, false)
+
+        for u <- vertices do                                                  // iterate over first table vertices
+            for v <- u.neighbors ((elab, refTab)) do                        // iterate over second table vertices
+                debug ("ejoin", s"(u. v) = ($u, $v)")
+                val w = Vertex (u.tuple ++ v.tuple)                         // collect all attribute values
+                s.vertices += w                                             // add vertex w to GTable s
+                updateEdges (s, w, u, v, elab)                       // add edges from u and v
+                debug ("ejoin", s"add vertex w = $w)")
+        end for
+        s
+    end ejoin
+
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Create an edge table containing all edges with the given edges label
@@ -597,10 +574,10 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
 
         for u <- vertices do
             for v <- u.neighbors ((elab, refTab)) do                        // iterate over second table vertices
-                debug ("edgeTable", s"(u. v) = ($u, $v)")
+                //debug ("edgeTable", s"(u. v) = ($u, $v)")
                 val w = Vertex (pull (u.tuple, key) ++ refTab.pull (v.tuple, key2))   // collect all attribute values
                 s.vertices += w                                             // add vertex w to GTable s
-                debug ("edgeTable", s"add vertex w = $w)")
+                //debug ("edgeTable", s"add vertex w = $w)")
         end for
         s
     end edgeTable
@@ -615,6 +592,44 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Add edges to vertex w to include all outgoing edges of u and v, except
+     *  those between u and v having edge-label elab and/or elab2.
+     *  FIX - must also add edge types to GTable s
+     *  @param s     the new graph-table 
+     *  @param w     the new vertex 
+     *  @param u     the original source vertex
+     *  @param v     the original target vertex (may be null)
+     *  @param elab  the edge-label
+     *  @param elab2 the back edge-label
+     */
+    private def updateEdges (s: GTable, w: Vertex, u: Vertex, v: Vertex, elab: String, elab2: String): Unit =
+        // add relevant edges and edge types from vertex u
+        for uu <- u.edge do                                  //each edge of vertex u will be represented uu
+            for u2 <- uu._2 if uu._1 != elab do                         // u2 represents u (every edge) 
+                //************NEW************//
+                s.addEdgeTypeC (uu._1, u2.to)                             //add edgeTypeC for new edges
+                val outV = u2.to
+                debug ("updateEdges", s"u: $w -- ${uu._1} -> $outV")
+                s.addE (w, uu._1, u2)
+        end for
+
+        if v != null then
+            // add relevant edges and edge types from vertex v
+            for vv <- v.edge do
+                for v2 <- vv._2 if vv._1 != elab2 do                    // || v2 != u do
+                    s.addEdgeTypeC (vv._1, v2.to)
+                    val outV = v2.to
+                    debug ("updateEdges", s"v: $w -- ${vv._1} -> $outV")
+                    s.addE (w, vv._1, v2)
+            end for
+        end if
+
+        
+    end updateEdges
+
+
+    //********************************NEW***********************************//
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    /** Add edges to vertex w to include all outgoing edges of u and v, except
      *  those between u and v having edge-label elab.
      *  FIX - must also add edge types to GTable s
      *  @param s     the new graph-table 
@@ -623,23 +638,34 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      *  @param v     the original target vertex (may be null)
      *  @param elab  the edge-label
      */
-    private def updateEdges (s: GTable, w: Vertex, u: Vertex, v: Vertex, elab: String, elab2: String): Unit =
-        // add relevant edges from vertex u
-        for uu <- u.edge do
-            for u2 <- uu._2 if uu._1 != elab do                         // || u2 != v do
-                debug ("updateEdges", s"u: $w -- ${uu._1} -> $u2")
+    private def updateEdges (s: GTable, w: Vertex, u: Vertex, v: Vertex, elab: String): Unit =
+        // add relevant edges and edge types from vertex u
+    
+        for uu <- u.edge do                                  //each edge of vertex u will be represented uu
+            for u2 <- uu._2 if uu._1 != elab do                         // u2 represents u (every edge) 
+                s.addEdgeTypeC (uu._1, u2.to)
+                val outV = u2.to
+                debug ("updateEdges", s"u: $w -- ${uu._1} -> $outV")
                 s.addE (w, uu._1, u2)
         end for
 
         if v != null then
-            // add relevant edges from vertex v
+            // add relevant edges and edge types from vertex v
             for vv <- v.edge do
-                for v2 <- vv._2 if vv._1 != elab2 do                    // || v2 != u do
-                    debug ("updateEdges", s"v: $w -- ${vv._1} -> $v2")
+                for v2 <- vv._2 do                    // || v2 != u do
+                    s.addEdgeTypeC (vv._1, v2.to)
+                    val outV = v2.to
+                    debug ("updateEdges", s"v: $w -- ${vv._1} -> $outV")
                     s.addE (w, vv._1, v2)
             end for
         end if
+
+        
     end updateEdges
+
+
+
+
 
   // O U T P U T
 
@@ -707,29 +733,198 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         val out = new PrintWriter (DATA_DIR + fileName)
         out.println (jsonStr)
         out.close ()
-    end writeJSON 
-
-    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    /** Return the basic statistics for each column of this table.
-     */
-
-    // #################################################################################################
-    // Fixed stats function for GTable by accounting for the fact that now we are dealing with verticies
-    // rather than tuples. To make stats show function work, had to extract tuples from verticies class
-    // then pass them into an overriden version of the stats function.
-    // #################################################################################################
-    override def stats: Table =
-        val s = new Table (s"${name}_stats",
-                           Array ("column", "count", "countd", "min", "max", "sum", "avg"),
-                           Array ('S', 'I', 'I', 'S', 'S', 'D', 'D'), Array ("column"))
-
-        val t = Bag [Tuple] ()
-        for j <- colIndices do t += vertices(j).tuple
-        for j <- colIndices do s add Table.stats (schema(j), col(j, t))
-        s
-    end stats
+    end writeJSON
 
 end GTable
+
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+/** The `gTableTest0` main function tests the `GTable` class with queries on the
+ *  Student-Course-Professor database.
+ *  > runMain scalation.database.table.gTableTest0
+ */
+@main def gTableTest0 (): Unit =
+
+    // Data Definition Language
+
+    val student   = GTable ("student",   "sid, sname, street, city, dept, level",
+                                         "I, S, S, S, S, I", "sid")
+    val professor = GTable ("professor", "pid, pname, street, city, dept",
+                                         "I, S, S, S, S", "pid")
+    val course    = GTable ("course",    "cid, cname, hours, dept",
+                                         "I, X, I, S", "cid")
+
+    student.addEdgeType ("takes", course, false)                // student has M courses
+    course.addEdgeType ("taught by", professor)              // course has 1 professor
+    student.addEdgeType("mentor", professor)            //student has 1 mentor
+    //professor.addEdgeType("teaches", course, false)            //professor has M classes
+
+    //--------------------------------------------------------------------------
+    banner ("Populate Database")
+
+    val v_Peter = student.addV (101, "Peter", "Oak St",   "Bogart",       "CS", 3)
+    val v_Paul  = student.addV (102, "Paul",  "Elm St",   "Watkinsville", "CE", 4)
+    val v_Mary  = student.addV (103, "Mary",  "Maple St", "Athens",       "CS", 4)
+
+    val v_DrBill = professor.addV (104, "DrBill", "Plum St", "Athens",       "CS")
+    val v_DrJohn = professor.addV (105, "DrJohn", "Pine St", "Watkinsville", "CE")
+
+    val v_Database     = course.addV (4370, "Database Management", 4, "CS")
+    val v_Architecture = course.addV (4720, "Comp. Architecture",  4, "CE")
+    val v_Networks     = course.addV (4760, "Computer Networks",   4, "CS")
+
+    student.addE ("takes", Edge (v_Peter, v_Database))
+           .addE ("takes", Edge (v_Peter, v_Architecture))
+           .addE ("takes", Edge (v_Paul,  v_Database))
+           .addE ("takes", Edge (v_Paul,  v_Networks))
+           .addE ("takes", Edge (v_Mary,  v_Networks))
+ 
+    course.addE ("taught by", Edge (v_Database,     v_DrBill))
+    course.addE ("taught by", Edge (v_Architecture, v_DrBill))
+    course.addE ("taught by", Edge (v_Networks,     v_DrJohn))
+
+    student.addE ("mentor", Edge (v_Mary, v_DrJohn))
+           .addE ("mentor", Edge (v_Paul, v_DrBill))
+           .addE ("mentor", Edge (v_Peter, v_DrJohn))
+           
+
+    
+    banner ("courses taken: course name via ejoin")
+    //val taken_ej = student ejoin ("takes", course) project ("sname, cname")
+    //taken_ej.show ()
+    val tt_ej = student ejoin ("takes", course) ejoin ("taught by", professor) project ("sname, cname, pname")
+    tt_ej.show ()
+    //val tt_ej = student ejoin ("takes", course) ejoin ("mentor", professor) project ("sname, cname, pname")
+    //tt_ej.show ()
+    //val tt_ej = student ejoin ("takes", course) edgeTable ("taught by", professor)
+    //tt_ej.show ()
+
+
+
+end gTableTest0
+
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+/** The `gTableTest2` main function tests the `GTable` class with queries on the
+ *  Student-Course-Professor database.
+ *  > runMain scalation.database.table.gTableTest2
+ */
+@main def gTableTest2 (): Unit =
+
+    // Data Definition Language
+
+    val student   = GTable ("student",   "sid, sname, street, city, dept, level",
+                                         "I, S, S, S, S, I", "sid")
+    val professor = GTable ("professor", "pid, pname, street, city, dept",
+                                         "I, S, S, S, S", "pid")
+    val course    = GTable ("course",    "cid, cname, hours, dept",
+                                         "I, X, I, S", "cid")
+
+    student.addEdgeType ("cid", course, false)                // student has M courses
+    course.addEdgeType ("sid", student, false)                // course has M students
+    course.addEdgeType ("pid", professor)              // course has 1 professor
+
+    //--------------------------------------------------------------------------
+    banner ("Populate Database")
+
+    val v_Peter = student.addV (101, "Peter", "Oak St",   "Bogart",       "CS", 3)
+    val v_Paul  = student.addV (102, "Paul",  "Elm St",   "Watkinsville", "CE", 4)
+    val v_Mary  = student.addV (103, "Mary",  "Maple St", "Athens",       "CS", 4)
+
+    val v_DrBill = professor.addV (104, "DrBill", "Plum St", "Athens",       "CS")
+    val v_DrJohn = professor.addV (105, "DrJohn", "Pine St", "Watkinsville", "CE")
+
+    val v_Database     = course.addV (4370, "Database Management", 4, "CS")
+    val v_Architecture = course.addV (4720, "Comp. Architecture",  4, "CE")
+    val v_Networks     = course.addV (4760, "Computer Networks",   4, "CS")
+
+    student.add2E ("cid", Edge (v_Peter, v_Database),     "sid", course)
+           .add2E ("cid", Edge (v_Peter, v_Architecture), "sid", course)
+           .add2E ("cid", Edge (v_Paul,  v_Database),     "sid", course)
+           .add2E ("cid", Edge (v_Paul,  v_Networks),     "sid", course)
+           .add2E ("cid", Edge (v_Mary,  v_Networks),     "sid", course)
+ 
+    course.addE ("pid", Edge (v_Database,     v_DrBill))
+    course.addE ("pid", Edge (v_Architecture, v_DrBill))
+    course.addE ("pid", Edge (v_Networks,     v_DrJohn))
+
+    //professor.addE ("cid", Edge (v_DrJohn, v_Networks))
+/*
+    banner ("Show vertex-tables")
+
+    student.show ()
+    professor.show ()
+    course.show ()
+
+    banner ("Show edge-tables")
+
+    //student.edgeTable (("*", course)).show ()
+    student.edgeTable (("cid", course)).show ()
+    course.edgeTable (("sid", student)).show ()
+    course.edgeTable (("pid", professor)).show ()
+*/
+    //--------------------------------------------------------------------------
+    /*banner ("Example Queries")
+
+    banner ("locations of students")
+    val locs = student project ("sname, city")
+    locs.show ()
+
+    banner ("living in Athens")
+    val inAthens = student select ("city == 'Athens'")
+    inAthens.show ()
+
+    banner ("not living in Athens")
+    val notAthens = student minus inAthens
+    notAthens.show ()
+
+    banner ("student intersect inAthens")
+    val inters = student intersect inAthens
+    inters.show ()
+
+    banner ("in-Athens union not-in-Athens")
+    val unio = inAthens union notAthens
+    unio.show ()    
+
+    banner ("courses taken: course id")
+    val taken_id = student expand ("sname, cid", ("cid", course))
+    taken_id.show ()
+
+    banner ("courses taken: course name")
+    val taken_nm = student expand ("sname, cname", ("cid", course))
+    taken_nm.show ()
+*/
+    banner ("courses taken: course name via ejoin")
+    val taken_ej = student ejoin ("cid", course, "sid") project ("sname, cname")
+    taken_ej.show ()
+
+/*
+    compare to equivalent for `Table` and `LTable`
+    takes.join (("sid", student))
+         .join (("cid", course))
+         .project ("sname, cname")
+*/
+/*
+    banner ("student taught by")
+    val taught_by = student.expand ("sname, cid", ("cid", course))
+                           .expand ("sname, pname", ("pid", professor))
+    taught_by.show ()
+
+    banner ("student taught by via ejoin")
+    val taught_by2 = student.ejoin ("cid", course, "sid")
+                            .ejoin ("pid", professor, "cid")
+                            .project ("sname, pname")
+    taught_by2.show ()
+*/
+/*
+    compare to equivalent for `Table` and `LTable`
+    takes.join (("sid", student))
+         .join (("cid", course))
+         .join (("pid", professor))
+         .project ("sname, pname")
+*/
+
+end gTableTest2
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 /** The `gTableTest` main function tests the `GTable` class with queries on the
@@ -745,13 +940,10 @@ end GTable
     val branch   = GTable ("branch", "bname, assets, bcity", "S, D, S", "bname")
     val loan     = GTable ("loan", "loanno, amount", "I, D", "loanno")
 
-    customer.create_index()
-    branch.create_index()
-
-    deposit.addEdgeType ("cname", customer)
-    deposit.addEdgeType ("bname", branch)
-    loan.addEdgeType ("cname", customer)
-    loan.addEdgeType ("bname", branch)
+    deposit.addEdgeType ("cname", customer, false)
+    deposit.addEdgeType ("bname", branch, false)
+    loan.addEdgeType ("cname", customer, false)
+    loan.addEdgeType ("bname", branch, false)
 
     //--------------------------------------------------------------------------
     banner ("Populate Database")
@@ -813,147 +1005,27 @@ end GTable
     //--------------------------------------------------------------------------
     banner ("Show Table Statistics")
 
-
-    customer.stats.show ()         // FIXED
+/*
+    customer.stats.show ()         // FIX - add support
     branch.stats.show ()
     deposit.stats.show ()
     loan.stats.show ()
-
+*/
 
     //--------------------------------------------------------------------------
     banner ("Example Queries")
 
     banner ("live in Athens")
-    val liveAthens = customer.select ("ccity == 'Athens'").project ("cname") 
+    val liveAthens = customer.σ ("ccity == 'Athens'").π ("cname") 
     liveAthens.show ()
 
     banner ("bank in Athens")
-    val bankAthens = (deposit.ejoin (("bname", branch.select ("bcity == 'Athens'"), "accno"))) //.π ("cname")
+    val bankAthens = (deposit ⋈ (("bname", branch.σ ("bcity == 'Athens'")))) //.π ("cname")
     bankAthens.show ()
 
 end gTableTest
  
 
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-/** The `gTableTest2` main function tests the `GTable` class with queries on the
- *  Student-Course-Professor database.
- *  > runMain scalation.database.table.gTableTest2
- */
-@main def gTableTest2 (): Unit =
-
-    // Data Definition Language
-
-    val student   = GTable ("student",   "sid, sname, street, city, dept, level",
-                                         "I, S, S, S, S, I", "sid")
-    val professor = GTable ("professor", "pid, pname, street, city, dept",
-                                         "I, S, S, S, S", "pid")
-    val course    = GTable ("course",    "cid, cname, hours, dept",
-                                         "I, X, I, S", "cid")
-
-    student.addEdgeType ("cid", course, false)                // student has M courses
-    course.addEdgeType ("sid", student, false)                // course has M students
-    course.addEdgeType ("pid", professor)                     // course has 1 professor
-
-    //--------------------------------------------------------------------------
-    banner ("Populate Database")
-
-    val v_Peter = student.addV (101, "Peter", "Oak St",   "Bogart",       "CS", 3)
-    val v_Paul  = student.addV (102, "Paul",  "Elm St",   "Watkinsville", "CE", 4)
-    val v_Mary  = student.addV (103, "Mary",  "Maple St", "Athens",       "CS", 4)
-
-    val v_DrBill = professor.addV (104, "DrBill", "Plum St", "Athens",       "CS")
-    val v_DrJohn = professor.addV (105, "DrJohn", "Pine St", "Watkinsville", "CE")
-
-    val v_Database     = course.addV (4370, "Database Management", 4, "CS")
-    val v_Architecture = course.addV (4720, "Comp. Architecture",  4, "CE")
-    val v_Networks     = course.addV (4760, "Computer Networks",   4, "CS")
-
-    student.add2E ("cid", Edge (v_Peter, v_Database),     "sid", course)
-           .add2E ("cid", Edge (v_Peter, v_Architecture), "sid", course)
-           .add2E ("cid", Edge (v_Paul,  v_Database),     "sid", course)
-           .add2E ("cid", Edge (v_Paul,  v_Networks),     "sid", course)
-           .add2E ("cid", Edge (v_Mary,  v_Networks),     "sid", course)
- 
-    course.addE ("pid", Edge (v_Database,     v_DrBill))
-          .addE ("pid", Edge (v_Architecture, v_DrBill))
-          .addE ("pid", Edge (v_Networks,     v_DrJohn))
-
-    banner ("Show vertex-tables")
-
-    student.show ()
-    professor.show ()
-    course.show ()
-
-    banner ("Show edge-tables")
-
-//  student.edgeTable (("*", course)).show ()
-    student.edgeTable (("cid", course)).show ()
-    course.edgeTable (("pid", professor)).show ()      // FIX - crashes
-
-    //--------------------------------------------------------------------------
-    banner ("Example Queries")
-
-    banner ("locations of students")
-    val locs = student project ("sname, city")
-    locs.show ()
-
-    banner ("living in Athens")
-    val inAthens = student select ("city == 'Athens'")
-    inAthens.show ()
-
-    banner ("not living in Athens")
-    val notAthens = student minus inAthens
-    notAthens.show ()
-
-    banner ("student intersect inAthens")
-    val inters = student intersect inAthens
-    inters.show ()
-
-    banner ("in-Athens union not-in-Athens")
-    val unio = inAthens union notAthens
-    unio.show ()    
-
-    banner ("courses taken: course id")
-    val taken_id = student expand ("sname, cid", ("cid", course))
-    taken_id.show ()
-
-    banner ("courses taken: course name")
-    val taken_nm = student expand ("sname, cname", ("cid", course))
-    taken_nm.show ()
-
-    banner ("courses taken: course name via ejoin")
-    val taken_ej = student ejoin ("cid", course, "sid") project ("sname, cname")
-    taken_ej.show ()
-
-/*
-    compare to equivalent for `Table` and `LTable`
-    takes.join (("sid", student))
-         .join (("cid", course))
-         .project ("sname, cname")
-*/
-
-    // BROKEN - FIX Double Expand and Double Ejoin
-
-    // banner ("student taught by")
-    // val taught_by = student.expand ("sname, cid", ("cid", course))
-    //                        .expand ("sname, pname", ("pid", professor))
-    // taught_by.show ()
-
-    // banner ("student taught by via ejoin")
-    // val taught_by2 = student.ejoin ("cid", course, "sid")
-    //                         .ejoin ("pid", professor, "cid")
-    //                         .project ("sname, pname")
-    // taught_by2.show ()
-
-/*
-    compare to equivalent for `Table` and `LTable`
-    takes.join (("sid", student))
-         .join (("cid", course))
-         .join (("pid", professor))
-         .project ("sname, pname")
-*/
-
-end gTableTest2
 
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1019,3 +1091,107 @@ end gTableTest2
 
 end gTableTest3
 
+
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+/** The `gTableTest` main function tests the `GTable` class with queries on the
+ *  Bank database.
+ *  > runMain scalation.database.table.gTableTest
+ */
+@main def gTableTest4 (): Unit =
+
+    // Data Definition Language
+
+    val customer = GTable ("customer", "cname, street, ccity", "S, S, S", "cname")
+    val deposit  = GTable ("deposit", "accno, balance", "I, D", "accno")
+    val branch   = GTable ("branch", "bname, assets, bcity", "S, D, S", "bname")
+    val loan     = GTable ("loan", "loanno, amount", "I, D", "loanno")
+
+    // deposit.addEdgeType ("cname", customer, false)
+    // deposit.addEdgeType ("bname", branch, false)
+    // loan.addEdgeType ("cname", customer, false)
+    // loan.addEdgeType ("bname", branch, false)
+
+    //--------------------------------------------------------------------------
+    banner ("Populate Database")
+
+    val v_Peter = customer.addV ("Peter", "Oak St",   "Bogart")
+    val v_Paul  = customer.addV ("Paul",  "Elm St",   "Watkinsville")
+    val v_Mary  = customer.addV ("Mary",  "Maple St", "Athens")
+    customer.show ()
+
+    for (i <- customer.col(1)) println (i)
+
+    // val v_Alps     = branch.addV ("Alps",     20000000.0, "Athens")
+    // val v_Downtown = branch.addV ("Downtown", 30000000.0, "Athens")
+    // val v_Lake     = branch.addV ("Lake",     10000000.0, "Bogart")
+    // branch.show ()
+
+    // val v_11 = deposit.addV (11, 2000.0)
+    // val v_12 = deposit.addV (12, 1500.0)
+    // val v_13 = deposit.addV (13, 2500.0)
+    // val v_14 = deposit.addV (14, 2500.0)
+    // val v_15 = deposit.addV (15, 3000.0)
+    // val v_16 = deposit.addV (16, 1000.0)
+    // deposit.show()
+
+    // deposit.addE ("bname", Edge (v_11, v_Lake))
+    //        .addE ("bname", Edge (v_12, v_Alps))
+    //        .addE ("bname", Edge (v_13, v_Downtown))
+    //        .addE ("bname", Edge (v_14, v_Lake))
+    //        .addE ("bname", Edge (v_15, v_Alps))
+    //        .addE ("bname", Edge (v_16, v_Downtown))
+
+    // deposit.addE ("cname", Edge (v_11, v_Peter))
+    //        .addE ("cname", Edge (v_12, v_Paul))
+    //        .addE ("cname", Edge (v_13, v_Paul))
+    //        .addE ("cname", Edge (v_14, v_Paul))
+    //        .addE ("cname", Edge (v_15, v_Mary))
+    //        .addE ("cname", Edge (v_16, v_Mary))
+
+    // val v_21 = loan.addV (21, 2200.0)
+    // val v_22 = loan.addV (22, 2100.0)
+    // val v_23 = loan.addV (23, 1500.0)
+    // val v_24 = loan.addV (24, 2500.0)
+    // val v_25 = loan.addV (25, 3000.0)
+    // val v_26 = loan.addV (26, 1000.0)
+
+    // loan.addE ("bname", Edge (v_21, v_Alps))
+    //     .addE ("bname", Edge (v_22, v_Downtown))
+    //     .addE ("bname", Edge (v_23, v_Alps))
+    //     .addE ("bname", Edge (v_24, v_Downtown))
+    //     .addE ("bname", Edge (v_25, v_Alps))
+    //     .addE ("bname", Edge (v_26, v_Lake))
+
+    // loan.addE ("cname", Edge (v_21, v_Peter))
+    //     .addE ("cname", Edge (v_22, v_Peter))
+    //     .addE ("cname", Edge (v_23, v_Paul))
+    //     .addE ("cname", Edge (v_24, v_Paul))
+    //     .addE ("cname", Edge (v_25, v_Mary))
+    //     .addE ("cname", Edge (v_26, v_Mary))
+    // loan.show ()
+
+    //--------------------------------------------------------------------------
+    // banner ("Show Table Statistics")
+
+
+    // customer.stats.show()        // FIX - add support
+    // branch.stats.show ()
+    // deposit.stats.show ()
+    // loan.stats.show ()
+
+
+
+
+    // //--------------------------------------------------------------------------
+    // banner ("Example Queries")
+
+    // banner ("live in Athens")
+    // val liveAthens = customer.σ ("ccity == 'Athens'").π ("cname") 
+    // liveAthens.show ()
+
+    // banner ("bank in Athens")
+    // val bankAthens = (deposit ⋈ (("bname", branch.σ ("bcity == 'Athens'")))) //.π ("cname")
+    // bankAthens.show ()
+
+end gTableTest4
