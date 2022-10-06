@@ -445,14 +445,14 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     /** Expand: expanding a pathTable
      */
     def expand(oldPathTable: Bag[Bag[(Edge, String)]], ref: (String, GTable)): Bag[Bag[(Edge, String)]] =
-        val (elab, refTab) = ref                                    // edge-label, referenced table
+        val (elab, refTab) = ref                                            // edge-label, referenced table
         val pathTable = oldPathTable
 
         var counter: Int = -1
         for path <- oldPathTable do
             counter = counter + 1
             val u = path.last._1.to
-            for e <- u.edge.getOrElse(elab, null) do               // Assumption: elab will uniqely identify refTab
+            for e <- u.edge.getOrElse(elab, null) do                        // Assumption: elab will uniqely identify refTab
                 if e != null then pathTable.get(counter).addOne((e, elab))
             end for
         end for
@@ -463,7 +463,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     /** Expand: Making a pathTable
      */
     def expand (ref: (String, GTable)): Bag[Bag[(Edge, String)]] =
-        val (elab, refTab) = ref                                            // edge-label, referenced table
+        val (elab, refTab) = ref                                                // edge-label, referenced table
         val pathTable = Bag[Bag [(Edge, String)]]()
 
         for u <- vertices do
@@ -641,8 +641,16 @@ case class PathTable (pathTable: Bag[Bag[(Edge, String)]]):
 
     def showPathTable(): Unit =
         for path <- pathTable do
+            var first : Int = 0
             for e <- path do
-                print(f"${e._1.from}\t\t---${e._2}--->\t\t${e._1.to}")
+                if first == 0 then
+                  print(f"${e._1.from}\t\t---${e._2}--->\t\t${e._1.to}")
+                  first = 1
+
+                else
+                    print(f"\t\t---${e._2}--->\t\t${e._1.to}")
+
+                end if
             end for
             print("\n")
         end for
