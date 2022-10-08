@@ -464,6 +464,14 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
                 val t2 = refTab.pull (v.tuple, x2)                          // pull values from vertex v
                 val w  = Vertex (t1 ++ t2)                                  // collect all attribute values
                 s.vertices += w                                             // add vertex w to GTable s
+                for((k,vl) <- v.edge) do
+                    w.edge += k -> vl
+                end for
+
+                /*for((k,vl) <- refTab.edgeType) do
+                    s.addEdgeType(k,vl._1,vl._2)
+                    s.addE(k, Edge(w, v))
+                end for*/
         end for
         s
     end expand
@@ -479,19 +487,19 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      */
     def ejoin (ref: (String, GTable, String)): GTable =
         val (elab, refTab, elab2) = ref                                     // edge-label, referenced table, back edge-label
-        var newKey = key                                                    // FIX - many-to-?
-        val isNotUnique = this.edgeType.get(elab).toString() contains "false"
+        var newKey = key                                                    // FIX - many-to-?  -> FIXED
+        val isNotUnique = this.edgeType(elab2)._2
         if isNotUnique == true then
-            newKey = key ++ refTab.key
+          newKey = key ++ refTab.key
         end if
 
         val s = new GTable (s"${name}_j_${cntr.inc ()}", schema ++ refTab.schema,
-                            domain ++ refTab.domain, newKey)
-                                                                            // need to know if it is m-m or m-1
+                            domain ++ refTab.domain, newKey)                                                                 // need to know if it is m-m or m-1
+
         if isNotUnique == true then
-            s.addEdgeType (elab, refTab, false)
+          s.addEdgeType (elab, refTab, false)
         else
-            s.addEdgeType (elab, refTab)
+          s.addEdgeType (elab, refTab)
         end if
 
 
@@ -500,7 +508,10 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
                 debug ("ejoin", s"(u. v) = ($u, $v)")
                 val w = Vertex (u.tuple ++ v.tuple)                         // collect all attribute values
                 s.vertices += w                                             // add vertex w to GTable s
-                updateEdges (s, w, u, v, elab, elab2)                       // add edges from u and v
+                //updateEdges (s, w, u, v, elab, elab2)                       // add edges from u and v
+                for ((k, vl) <- v.edge) do
+                  w.edge += k -> vl
+                end for
                 debug ("ejoin", s"add vertex w = $w)")
         end for
         s
@@ -752,10 +763,12 @@ end gTableTest
                                          "I, S, S, S, S", "pid")
     val course    = GTable ("course",    "cid, cname, hours, dept",
                                          "I, X, I, S", "cid")
+    val department = GTable("department", "did, dname", "I,S" , "did")
 
     student.addEdgeType ("cid", course, false)                // student has M courses
     course.addEdgeType ("sid", student, false)                // course has M students
     course.addEdgeType ("pid", professor)                     // course has 1 professor
+    professor.addEdgeType("did",department, false)
 
     //--------------------------------------------------------------------------
     banner ("Populate Database")
@@ -771,6 +784,9 @@ end gTableTest
     val v_Architecture = course.addV (4720, "Comp. Architecture",  4, "CE")
     val v_Networks     = course.addV (4760, "Computer Networks",   4, "CS")
 
+    val v_CompSci = department.addV (1001, "Computer Science")
+    val v_AI = department.addV (1002, "AI")
+
     student.add2E ("cid", Edge (v_Peter, v_Database),     "sid", course)
            .add2E ("cid", Edge (v_Peter, v_Architecture), "sid", course)
            .add2E ("cid", Edge (v_Paul,  v_Database),     "sid", course)
@@ -780,6 +796,9 @@ end gTableTest
     course.addE ("pid", Edge (v_Database,     v_DrBill))
           .addE ("pid", Edge (v_Architecture, v_DrBill))
           .addE ("pid", Edge (v_Networks,     v_DrJohn))
+
+    professor.addE("did", Edge(v_DrJohn, v_CompSci))
+             .addE("did", Edge(v_DrBill,v_AI))
 
     banner ("Show vertex-tables")
 
@@ -791,7 +810,7 @@ end gTableTest
 
 //  student.edgeTable (("*", course)).show ()
     student.edgeTable (("cid", course)).show ()
-    course.edgeTable (("pid", professor)).show ()      // FIX - crashes
+    course.edgeTable (("pid", professor)).show ()      // FIX - crashes  --> FIXED (needed to fix def addE)
 
     //--------------------------------------------------------------------------
     banner ("Example Queries")
@@ -838,18 +857,30 @@ end gTableTest
          .join (("cid", course))
          .project ("sname, cname")
 */
-/*
+
     banner ("student taught by")
     val taught_by = student.expand ("sname, cid", ("cid", course))
                            .expand ("sname, pname", ("pid", professor))
     taught_by.show ()
 
-    banner ("student taught by via ejoin")
-    val taught_by2 = student.ejoin ("cid", course, "sid")
-                            .ejoin ("pid", professor, "cid")
-                            .project ("sname, pname")
-    taught_by2.show ()
-*/
+    banner("student taking class in (department)")
+    val taking_class_in = student.expand("sname, cid", ("cid", course))
+                            .expand("sname, pname", ("pid", professor))
+                            .expand("sname, dname", ("did", department))
+    taking_class_in.show()
+
+    //val taught_by2 =
+    student.ejoin ("cid", course, "sid")
+                            .edgeTable("pid", professor).show()
+                            //.project ("sname, cname")
+
+    //taught_by2.show ()
+    banner("student taught by via ejoin")
+    val taught_by2 = student.ejoin("cid", course, "sid")
+                            .ejoin("pid", professor, "cid")
+                            .project("sname, pname")
+    taught_by2.show()
+
 /*
     compare to equivalent for `Table` and `LTable`
     takes.join (("sid", student))
