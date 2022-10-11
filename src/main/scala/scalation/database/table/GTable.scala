@@ -560,21 +560,20 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     def ejoin (ref: (String, GTable, String)): GTable =
         val (elab, refTab, elab2) = ref                                     // edge-label, referenced table, back edge-label
         var newKey = key                                                    // FIX - many-to-?  -> FIXED
-        val isNotUnique = this.edgeType(elab2)._2
+        val isNotUnique = this.edgeType(elab)._2
         if isNotUnique == true then
             newKey = key ++ refTab.key
         end if
 
         val s = new GTable (s"${name}_j_${cntr.inc ()}", schema ++ refTab.schema,
             domain ++ refTab.domain, newKey)                                                                 // need to know if it is m-m or m-1
-
+/*
         if isNotUnique == true then
             s.addEdgeType (elab, refTab, false)
         else
             s.addEdgeType (elab, refTab)
         end if
-
-
+*/
         for u <- vertices do                                                // iterate over first table vertices
             for v <- u.neighbors ((elab, refTab)) do                        // iterate over second table vertices
                 debug ("ejoin", s"(u. v) = ($u, $v)")
@@ -583,6 +582,13 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
                 // updateEdges (s, w, u, v, elab, elab2)                    // add edges from u and v
                 // Not using the above function - updating edge below
                 for ((k, vl) <- v.edge) do
+                    if s.edgeType.contains(k) == false then
+                        if isNotUnique == true then
+                            s.addEdgeType(k, refTab, false)
+                        else
+                            s.addEdgeType(k, refTab)
+                        end if
+                    end if
                     w.edge += k -> vl
                 end for
                 debug ("ejoin", s"add vertex w = $w)")
