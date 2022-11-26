@@ -10,7 +10,7 @@
 
 package scalation
 package database
-package table 
+package table
 
 import com.google.gson.Gson
 
@@ -25,6 +25,9 @@ import scalation.database.{HashMultiMap => MIndexMap}
 import scala.collection.mutable.{ArrayBuffer => Bag, Map}
 import scala.math.min
 import scala.runtime.ScalaRunTime.stringOf
+import Table.*
+import scala.util.control.Breaks._
+
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 /** The `Edge` class includes three parts:  The edge attributes in the form of
@@ -55,12 +58,12 @@ end Edge
  */
 case class Vertex (tuple: Tuple):
 
-    val edge = Map [String, Bag [Edge]] ()                      // map edge-label -> { edges } 
+    val edge = Map [String, Bag [Edge]] ()                      // map edge-label -> { edges }
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Return the neighboring vertices reachable in one-hop by taking edges
      *  emanating from this vertex.
-     */ 
+     */
     def neighbors: Bag [Vertex] =
         val vs = Bag [Vertex] ()
         val es: Iterable [Bag [Edge]] = edge.values
@@ -72,7 +75,7 @@ case class Vertex (tuple: Tuple):
     /** Return the neighboring vertices reachable in one-hop by taking edge with
      *  edge-label elab emanating from this vertex.
      *  @param elab  the edge-label (wild-card "*" means take all edges)
-     */ 
+     */
     def neighbors (elab: String): Bag [Vertex] =
         if elab == "*" then neighbors else edge (elab).map (_.to)
     end neighbors
@@ -81,7 +84,7 @@ case class Vertex (tuple: Tuple):
     /** Return the neighboring vertices reachable in one-hop by taking edge with
      *  edge-label elab emanating from this vertex that are in the reference table.
      *  @param ref  the edge-label and reference table
-     */ 
+     */
     def neighbors (ref: (String, GTable)): Bag [Vertex] =
         edge (ref._1).map (_.to) intersect ref._2.vertices
     end neighbors
@@ -94,6 +97,7 @@ case class Vertex (tuple: Tuple):
 end Vertex
 
 
+
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 /** The `GTable` companion object provides factory functions for creating graph-tables.
  *  Supported domains/data-types are 'D'ouble, 'I'nt, 'L'ong, 'S'tring, and 'T'imeNum.
@@ -102,7 +106,7 @@ object GTable:
 
     import Table.makeTuple
 
-    private val debug = debugf ("GTable", true)                             // debug function
+    private val debug = debugf ("GTable", false)                     // debug function
     private val flaw  = flawf ("GTable")                                    // flaw function
     private val cntr  = Counter ()                                          // counter for generating unique names
 
@@ -156,7 +160,7 @@ object GTable:
 
         var s: GTable = null                    // new GTable (name, schema, domain, strim (key))
 
-//      val lines = getFromURL_File (fileName)                              // read the CSV file
+        //      val lines = getFromURL_File (fileName)                              // read the CSV file
         val lines = readFileIntoArray (fileName, useFullPath, limit)        // read the CSV file
         var l_no  = 0                                                       // the line number
 
@@ -194,8 +198,8 @@ import GTable.{cntr, flaw, debug}
  *  @param key_     the attributes forming the primary key
  */
 class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
-     extends Table (name_, schema_, domain_, key_)
-        with Serializable:
+  extends Table (name_, schema_, domain_, key_)
+    with Serializable:
 
     val vertices = Bag [Vertex] ()                                          // collection of related vertices
     val edgeType = Map [String, (GTable, Boolean)] ()                       // collection of outgoing edge types
@@ -289,7 +293,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      *  @param to      the graph-table/vertex type for the target vertices
      *  @param unique  whether the target vertex is unique, e.g., many-to-one relationship
      */
-    def addEdgeType (elab: String, to: GTable, unique: Boolean = true): Unit =   
+    def addEdgeType (elab: String, to: GTable, unique: Boolean = true): Unit =
         edgeType    += elab -> (to, unique)
         to.edgeType += elab -> (this, false)
     end addEdgeType
@@ -299,8 +303,8 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      *  @param v  the vertex to add
      */
     def add (v: Vertex): Vertex =
-         if typeCheck (v.tuple) then vertices += v
-         v
+        if typeCheck (v.tuple) then vertices += v
+        v
     end add
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -328,7 +332,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
             else
                 eset += e
             end if
-        else 
+        else
             flaw ("addE", s"elab = $elab not an edge type for $name")
         end if
         this
@@ -367,7 +371,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         add2E (e.from, elab, e, elab2, e.to, tab)
         this
     end add2E
- 
+
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Add edges from vertex u to vertices vs with edge-label elab.
      *  @param u     the source vertex, e.g., professor
@@ -384,7 +388,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
                 if eset == null then u.edge += elab -> es
                 else eset ++= es
             end if
-        else 
+        else
             flaw ("addEs", s"elab = $elab not an edge type for $name")
         end if
     end addEs
@@ -439,28 +443,28 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      *  @param verts    the initial collection of vertices
      */
     private def selectVerts (a1: String, op: String, a2: String, twoAtrs: Boolean,
-                            verts: Bag [Vertex] = vertices): Bag [Vertex] =
+                             verts: Bag [Vertex] = vertices): Bag [Vertex] =
         if twoAtrs then                                                     // a1 and a2 are attributes
             val a2_ = a2.toString
             op match
-            case "==" => verts.filter (v => v.tuple(on(a1)) == v.tuple(on(a2_)))
-            case "!=" => verts.filter (v => v.tuple(on(a1)) != v.tuple(on(a2_)))
-            case "<"  => verts.filter (v => v.tuple(on(a1)) <  v.tuple(on(a2_)))
-            case "<=" => verts.filter (v => v.tuple(on(a1)) <= v.tuple(on(a2_)))
-            case ">"  => verts.filter (v => v.tuple(on(a1)) >  v.tuple(on(a2_)))
-            case ">=" => verts.filter (v => v.tuple(on(a1)) >= v.tuple(on(a2_)))
-            case _    => flaw ("select", s"$op is an unrecognized operator"); verts
+                case "==" => verts.filter (v => v.tuple(on(a1)) == v.tuple(on(a2_)))
+                case "!=" => verts.filter (v => v.tuple(on(a1)) != v.tuple(on(a2_)))
+                case "<"  => verts.filter (v => v.tuple(on(a1)) <  v.tuple(on(a2_)))
+                case "<=" => verts.filter (v => v.tuple(on(a1)) <= v.tuple(on(a2_)))
+                case ">"  => verts.filter (v => v.tuple(on(a1)) >  v.tuple(on(a2_)))
+                case ">=" => verts.filter (v => v.tuple(on(a1)) >= v.tuple(on(a2_)))
+                case _    => flaw ("select", s"$op is an unrecognized operator"); verts
         else                                                                // a1 is attribute, a2 is value
             val col = on(a1)
             val a2_ : ValueType = string2Dom (a2, domain (col))
             op match
-            case "==" => verts.filter (v => v.tuple(col) == a2_)
-            case "!=" => verts.filter (v => v.tuple(col) != a2_)
-            case "<"  => verts.filter (v => v.tuple(col) <  a2_)
-            case "<=" => verts.filter (v => v.tuple(col) <= a2_)
-            case ">"  => verts.filter (v => v.tuple(col) >  a2_)
-            case ">=" => verts.filter (v => v.tuple(col) >= a2_)
-            case _    => flaw ("select", s"$op is an unrecognized operator"); verts
+                case "==" => verts.filter (v => v.tuple(col) == a2_)
+                case "!=" => verts.filter (v => v.tuple(col) != a2_)
+                case "<"  => verts.filter (v => v.tuple(col) <  a2_)
+                case "<=" => verts.filter (v => v.tuple(col) <= a2_)
+                case ">"  => verts.filter (v => v.tuple(col) >  a2_)
+                case ">=" => verts.filter (v => v.tuple(col) >= a2_)
+                case _    => flaw ("select", s"$op is an unrecognized operator"); verts
         end if
     end selectVerts
 
@@ -477,8 +481,8 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         val s = new GTable (s"${name}_u_${cntr.inc ()}", schema, domain, key)
 
         s.vertices ++= (
-        if r2.isInstanceOf [GTable] then vertices ++ r2.asInstanceOf [GTable].vertices
-        else vertices ++ r2.tuples.map (Vertex (_)))
+          if r2.isInstanceOf [GTable] then vertices ++ r2.asInstanceOf [GTable].vertices
+          else vertices ++ r2.tuples.map (Vertex (_)))
         s
     end union
 
@@ -521,17 +525,24 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      */
     def expand(oldPathTable: Bag[Bag[(Edge, String)]], ref: (String, GTable)): Bag[Bag[(Edge, String)]] =
         val (elab, refTab) = ref                                            // edge-label, referenced table
-        val pathTable = oldPathTable
+        val newPathTable = Bag[Bag[(Edge, String)]]()
+
 
         var counter: Int = -1
         for path <- oldPathTable do
             counter = counter + 1
             val u = path.last._1.to
             for e <- u.edge.getOrElse(elab, null) do                        // Assumption: elab will uniqely identify refTab
-                if e != null then pathTable.get(counter).addOne((e, elab))
+            //if e != null then pathTable.get(counter).addOne((e, elab))
+                if e != null then{
+                    newPathTable.addOne(oldPathTable.get(counter))
+                    newPathTable.tail.addOne(Bag((e, elab)))
+                }
             end for
         end for
-        pathTable
+
+        System.gc()
+        newPathTable
     end expand
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -540,6 +551,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     def expand (ref: (String, GTable)): Bag[Bag[(Edge, String)]] =
         val (elab, refTab) = ref                                                // edge-label, referenced table
         val pathTable = Bag[Bag [(Edge, String)]]()
+
 
         for u <- vertices do
             for e <- u.edge.getOrElse(elab, null) do
@@ -619,8 +631,8 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     /** Add edges to vertex w to include all outgoing edges of u and v, except
      *  those between u and v having edge-label elab.
      *  FIX - must also add edge types to GTable s
-     *  @param s     the new graph-table 
-     *  @param w     the new vertex 
+     *  @param s     the new graph-table
+     *  @param w     the new vertex
      *  @param u     the original source vertex
      *  @param v     the original target vertex (may be null)
      *  @param elab  the edge-label
@@ -634,7 +646,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         end for
 
         if v != null then
-            // add relevant edges from vertex v
+        // add relevant edges from vertex v
             for vv <- v.edge do
                 for v2 <- vv._2 if vv._1 != elab2 do                    // || v2 != u do
                     debug ("updateEdges", s"v: $w -- ${vv._1} -> $v2")
@@ -643,7 +655,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         end if
     end updateEdges
 
-  // O U T P U T
+    // O U T P U T
 
     private val width_ = 18                                                 // default column width
     private val width  = Array.fill (domain.size) (width_)                  // width for each column
@@ -660,8 +672,8 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
      *  @param rng  the range of vertices to show (e.g, 0 until 10), defaults to all
      */
     override def show (rng: Range = vertices.indices): Unit =
-//      val edgeLabels = edgeType.keySet.toArray                            // all outgoing edges
-//      val edgeLabels = (for (k, v) <- edgeType if v._2 yield k).toArray   // many-to-one cases
+        //      val edgeLabels = edgeType.keySet.toArray                            // all outgoing edges
+        //      val edgeLabels = (for (k, v) <- edgeType if v._2 yield k).toArray   // many-to-one cases
         val eschema    = schema // ++ edgeLabels
         val len        = width_ * (eschema.size + countX)
 
@@ -683,16 +695,16 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
                 prt (v_i.tuple(j), wj)
             end for
 
-/* Show edges separately
-            val es = v_i.edge                                               // outgoing edges
-            if es.nonEmpty then
-                for elab <- edgeLabels do                                   // many-to-one cases
-//                  debug ("show", s"es.head = ${es.head}, elab = $elab")
-                    val x = es.getOrElse (elab, null)
-                    if x != null then prt (x.head.tuple(0), width_)
-                end for
-            end if
-*/
+            /* Show edges separately
+                        val es = v_i.edge                                               // outgoing edges
+                        if es.nonEmpty then
+                            for elab <- edgeLabels do                                   // many-to-one cases
+            //                  debug ("show", s"es.head = ${es.head}, elab = $elab")
+                                val x = es.getOrElse (elab, null)
+                                if x != null then prt (x.head.tuple(0), width_)
+                            end for
+                        end if
+            */
             println (" |")
         end for
         println ("|-" + "-" * len + "-|")
@@ -709,7 +721,7 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
         val out = new PrintWriter (DATA_DIR + fileName)
         out.println (jsonStr)
         out.close ()
-    end writeJSON 
+    end writeJSON
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     /** Return the basic statistics for each column of this table.
@@ -722,8 +734,8 @@ class GTable (name_ : String, schema_ : Schema, domain_ : Domain, key_ : Schema)
     // #################################################################################################
     override def stats: Table =
         val s = new Table (s"${name}_stats",
-                           Array ("column", "count", "countd", "min", "max", "sum", "avg"),
-                           Array ('S', 'I', 'I', 'S', 'S', 'D', 'D'), Array ("column"))
+            Array ("column", "count", "countd", "min", "max", "sum", "avg"),
+            Array ('S', 'I', 'I', 'S', 'S', 'D', 'D'), Array ("column"))
 
         val t = Bag [Tuple] ()
         for j <- colIndices do t += vertices(j).tuple
@@ -743,8 +755,8 @@ case class PathTable (pathTable: Bag[Bag[(Edge, String)]]):
             var first : Int = 0
             for e <- path do
                 if first == 0 then
-                  print(f"${e._1.from}\t\t---${e._2}--->\t\t${e._1.to}")
-                  first = 1
+                    print(f"${e._1.from}\t\t---${e._2}--->\t\t${e._1.to}")
+                    first = 1
 
                 else
                     print(f"\t\t---${e._2}--->\t\t${e._1.to}")
@@ -801,18 +813,18 @@ end PathTable
     val v_16 = deposit.addV (16, 1000.0)
 
     deposit.addE ("bname", Edge (v_11, v_Lake))
-           .addE ("bname", Edge (v_12, v_Alps))
-           .addE ("bname", Edge (v_13, v_Downtown))
-           .addE ("bname", Edge (v_14, v_Lake))
-           .addE ("bname", Edge (v_15, v_Alps))
-           .addE ("bname", Edge (v_16, v_Downtown))
+      .addE ("bname", Edge (v_12, v_Alps))
+      .addE ("bname", Edge (v_13, v_Downtown))
+      .addE ("bname", Edge (v_14, v_Lake))
+      .addE ("bname", Edge (v_15, v_Alps))
+      .addE ("bname", Edge (v_16, v_Downtown))
 
     deposit.addE ("cname", Edge (v_11, v_Peter))
-           .addE ("cname", Edge (v_12, v_Paul))
-           .addE ("cname", Edge (v_13, v_Paul))
-           .addE ("cname", Edge (v_14, v_Paul))
-           .addE ("cname", Edge (v_15, v_Mary))
-           .addE ("cname", Edge (v_16, v_Mary))
+      .addE ("cname", Edge (v_12, v_Paul))
+      .addE ("cname", Edge (v_13, v_Paul))
+      .addE ("cname", Edge (v_14, v_Paul))
+      .addE ("cname", Edge (v_15, v_Mary))
+      .addE ("cname", Edge (v_16, v_Mary))
     deposit.show ()
 
     val v_21 = loan.addV (21, 2200.0)
@@ -823,18 +835,18 @@ end PathTable
     val v_26 = loan.addV (26, 1000.0)
 
     loan.addE ("bname", Edge (v_21, v_Alps))
-        .addE ("bname", Edge (v_22, v_Downtown))
-        .addE ("bname", Edge (v_23, v_Alps))
-        .addE ("bname", Edge (v_24, v_Downtown))
-        .addE ("bname", Edge (v_25, v_Alps))
-        .addE ("bname", Edge (v_26, v_Lake))
+      .addE ("bname", Edge (v_22, v_Downtown))
+      .addE ("bname", Edge (v_23, v_Alps))
+      .addE ("bname", Edge (v_24, v_Downtown))
+      .addE ("bname", Edge (v_25, v_Alps))
+      .addE ("bname", Edge (v_26, v_Lake))
 
     loan.addE ("cname", Edge (v_21, v_Peter))
-        .addE ("cname", Edge (v_22, v_Peter))
-        .addE ("cname", Edge (v_23, v_Paul))
-        .addE ("cname", Edge (v_24, v_Paul))
-        .addE ("cname", Edge (v_25, v_Mary))
-        .addE ("cname", Edge (v_26, v_Mary))
+      .addE ("cname", Edge (v_22, v_Peter))
+      .addE ("cname", Edge (v_23, v_Paul))
+      .addE ("cname", Edge (v_24, v_Paul))
+      .addE ("cname", Edge (v_25, v_Mary))
+      .addE ("cname", Edge (v_26, v_Mary))
     loan.show ()
 
     //--------------------------------------------------------------------------
@@ -851,7 +863,7 @@ end PathTable
     banner ("Example Queries")
 
     banner ("live in Athens")
-    val liveAthens = customer.select ("ccity == 'Athens'").project ("cname") 
+    val liveAthens = customer.select ("ccity == 'Athens'").project ("cname")
     liveAthens.show ()
 
     banner ("bank in Athens")
@@ -859,7 +871,7 @@ end PathTable
     bankAthens.show ()
 
 end gTableTest
- 
+
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 /** The `gTableTest2` main function tests the `GTable` class with queries on the
@@ -871,11 +883,11 @@ end gTableTest
     // Data Definition Language
 
     val student   = GTable ("student",   "sid, sname, street, city, dept, level",
-                                         "I, S, S, S, S, I", "sid")
+        "I, S, S, S, S, I", "sid")
     val professor = GTable ("professor", "pid, pname, street, city, dept",
-                                         "I, S, S, S, S", "pid")
+        "I, S, S, S, S", "pid")
     val course    = GTable ("course",    "cid, cname, hours, dept",
-                                         "I, X, I, S", "cid")
+        "I, X, I, S", "cid")
 
     student.addEdgeType ("cid", course, false)                // student has M courses
     course.addEdgeType ("sid", student, false)                // course has M students
@@ -896,14 +908,14 @@ end gTableTest
     val v_Networks     = course.addV (4760, "Computer Networks",   4, "CS")
 
     student.add2E ("cid", Edge (v_Peter, v_Database),     "sid", course)
-           .add2E ("cid", Edge (v_Peter, v_Architecture), "sid", course)
-           .add2E ("cid", Edge (v_Paul,  v_Database),     "sid", course)
-           .add2E ("cid", Edge (v_Paul,  v_Networks),     "sid", course)
-           .add2E ("cid", Edge (v_Mary,  v_Networks),     "sid", course)
- 
+      .add2E ("cid", Edge (v_Peter, v_Architecture), "sid", course)
+      .add2E ("cid", Edge (v_Paul,  v_Database),     "sid", course)
+      .add2E ("cid", Edge (v_Paul,  v_Networks),     "sid", course)
+      .add2E ("cid", Edge (v_Mary,  v_Networks),     "sid", course)
+
     course.addE ("pid", Edge (v_Database,     v_DrBill))
-          .addE ("pid", Edge (v_Architecture, v_DrBill))
-          .addE ("pid", Edge (v_Networks,     v_DrJohn))
+      .addE ("pid", Edge (v_Architecture, v_DrBill))
+      .addE ("pid", Edge (v_Networks,     v_DrJohn))
 
     banner ("Show vertex-tables")
 
@@ -913,7 +925,7 @@ end gTableTest
 
     banner ("Show edge-tables")
 
-//  student.edgeTable (("*", course)).show ()
+    //  student.edgeTable (("*", course)).show ()
     student.edgeTable (("cid", course)).show ()
     course.edgeTable (("pid", professor)).show ()      // FIX - crashes
 
@@ -938,7 +950,7 @@ end gTableTest
 
     banner ("in-Athens union not-in-Athens")
     val unio = inAthens union notAthens
-    unio.show ()    
+    unio.show ()
 
     banner ("courses taken: course id")
     val taken_id : PathTable = PathTable(student expand (("cid", course)))
@@ -952,12 +964,12 @@ end gTableTest
     val taken_ej = student ejoin ("cid", course, "sid") project ("sname, cname")
     taken_ej.show ()
 
-/*
-    compare to equivalent for `Table` and `LTable`
-    takes.join (("sid", student))
-         .join (("cid", course))
-         .project ("sname, cname")
-*/
+    /*
+        compare to equivalent for `Table` and `LTable`
+        takes.join (("sid", student))
+             .join (("cid", course))
+             .project ("sname, cname")
+    */
 
     banner ("student taught by")
     val taught_by : PathTable = PathTable(student.expand( student.expand ( ("cid", course)), ("pid", professor)))
@@ -965,8 +977,8 @@ end gTableTest
 
     banner ("student taught by via ejoin")
     val taught_by2 = student.ejoin ("cid", course, "sid")
-                            .ejoin ("pid", professor, "cid")
-                            .project ("sname, pname")
+      .ejoin ("pid", professor, "cid")
+      .project ("sname, pname")
     taught_by2.show ()
 
 /*
@@ -996,8 +1008,8 @@ end gTableTest2
 
     val fileName = "covid_19.csv"
     println (s"fileName = $fileName")
-//  readFile (fileName)                                      // for RELATIVE PATHS
-//  readFile (fileName, fullPath = true)                     // for FULL PATHS
+    //  readFile (fileName)                                      // for RELATIVE PATHS
+    //  readFile (fileName, fullPath = true)                     // for FULL PATHS
 
     //--------------------------------------------------------------------------
     // Use sample row/tuple in the middle of the file that has full information.
@@ -1043,3 +1055,120 @@ end gTableTest2
 
 end gTableTest3
 
+
+
+@main def gTablePerformanceTest (): Unit =
+
+    val lines = readFileIntoArray("moviesdirectorsactorsusers-10.csv", false, -1) // read the CSV file
+    //column headers not mentioned in csv
+    //movies.movieid,genre,year,country,runningtime,
+    // actors.actorid,a_gender,a_quality,cast_num,
+    // directors.directorid,d_quality,avg_revenue,
+    // u2base.userid,rating,age,u_gender,occupation
+
+    val movie = GTable("movie", "movieid, genre, year, country, runningtime",
+        "I, S, I, S, I", "movieid")
+    val posm = Array(0, 1, 2, 3, 4)
+
+    val actor = GTable("actor", "actorid, a_gender, a_quality, cast_num",
+        "I, S, I, I", "actorid")
+    val posa = Array(5, 6, 7, 8)
+
+    val director = GTable("director", "directorid, d_quality, avg_revenue",
+        "I, I, I", "directorid")
+    val posd = Array(9, 10, 11)
+
+    val user = GTable("user", "userid, age, u_gender,occupation",
+        "I, I, S, I", "directorid")
+    val posu = Array(12, 14, 15, 16)
+
+    // rating ??
+    val rating = GTable("rating", "ratingvalue",
+        "I", "ratingvalue")
+    val posr = Array(13)
+
+
+    movie.addEdgeType("actorid", actor, false) // movie has many actors
+    movie.addEdgeType("directorid", director, false) // movie can have many directors
+    movie.addEdgeType("ratingvalue", rating, false) // movie can have many ratingvalues
+    movie.addEdgeType("userid", user, false) // movie can be watched/rated-by many users
+
+    actor.addEdgeType("movieid", movie, false) // actor can act in  many movies
+    actor.addEdgeType("directorid", director, false) // actor can work with many directors
+
+    director.addEdgeType("movieid", movie, false) // director can direct many movies
+    director.addEdgeType("actorid", actor, false) // director can work with many actors
+
+    user.addEdgeType("movieid", movie, false) // user rate many movies
+    user.addEdgeType("ratingvalue", rating, false) // user can rate diff rating values to diff movies
+
+    rating.addEdgeType("movieid", movie, false) // rating can be given same for many movies
+    rating.addEdgeType("userid", user, false) // rating can be given-by many users
+
+    //first gtables need to be populated with vertices to add edges?
+
+
+    val movieMap = Map[Int, Vertex]()
+    val actorMap = Map[Int, Vertex]()
+    val directorMap = Map[Int, Vertex]()
+    val userMap = Map[Int, Vertex]()
+    val ratingMap = Map[Int, Vertex]()
+
+    var count: Int = 0;
+    breakable{
+
+        for ln <- lines do // iterate by lines in file for testing use:  for ln <- lines.take(1) do
+            //add vertices ; need to remove duplicates; need to do domething about rating
+
+            if count % 1000 == 0  then println(s"size = ${movieMap.size}")
+            //if count == 500 then break
+            count = count + 1
+
+            val tokens = ln.split(",", -1).map(_.trim)
+
+            val mv = movieMap.getOrElseUpdate(tokens(0).toInt, movie.addV(makeTuple(tokens, movie.domain, posm))) //movie.addV(makeTuple(tokens, movie.domain, posm))
+            val av = actorMap.getOrElseUpdate(tokens(5).toInt, actor.addV(makeTuple(tokens, actor.domain, posa))) //actor.addV(makeTuple(tokens, actor.domain, posa))
+            val dv = directorMap.getOrElseUpdate(tokens(9).toInt, director.addV(makeTuple(tokens, director.domain, posd))) //director.addV(makeTuple(tokens, actor.domain, posd))
+            val uv = userMap.getOrElseUpdate(tokens(12).toInt, user.addV(makeTuple(tokens, user.domain, posu))) //user.addV(makeTuple(tokens, user.domain, posu))
+            val rv = ratingMap.getOrElseUpdate(tokens(13).toInt, rating.addV(makeTuple(tokens, rating.domain, posr))) //rating.addV(makeTuple(tokens, rating.domain, posr))
+
+            //adding two way edges so no need to add from the another vtable
+            movie.add2E("actorid", Edge(mv, av), "movieid", actor)
+            movie.add2E("directorid", Edge(mv, dv), "movieid", director)
+            movie.add2E("ratingvalue", Edge(mv, rv), "movieid", rating)
+            movie.add2E("userid", Edge(mv, uv), "movieid", user)
+            //actor.add2E("directorid", Edge(av, dv), "actorid", director)
+            user.add2E("ratingvalue", Edge(uv, rv), "userid", rating)
+
+        end for
+    }
+
+    // equivalent to 2 joins
+    banner("movies director expands")
+    for (i <- 1 to 1) {
+        time {
+            val directed_by_expand = movie.expand(("directorid", director))
+        }
+    }
+    return
+
+        // equivalent to 4 joins
+        banner("actors movies director expands")
+    for (i <- 1 to 1) {
+        time {
+            val act_mov_dir: PathTable = PathTable(actor.expand(actor.expand(("movieid", movie)), ("directorid", director)))
+        }
+    }
+
+    // equivalent to 6 joins
+    banner("actors movies user rating")
+    for (i <- 1 to 1) {
+        time {
+            val act_mov_usr_rat: PathTable = PathTable(actor.expand(actor.expand(actor.expand(("movieid", movie)), ("userid", user)), ("ratingvalue", rating)));
+
+        }
+    }
+
+//val taught_by : PathTable = PathTable(student.expand( student.expand ( ("cid", course)), ("pid", professor)))
+
+end gTablePerformanceTest
